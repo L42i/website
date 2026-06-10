@@ -1,0 +1,74 @@
+---
+import Navigation from './Navigation.astro'; 
+---
+
+<header class="site-header">
+  <div class="header-container">
+    
+    <a href="/" class="logo-link">
+      <figure class="header-logo">
+        <img 
+          src="/assets/l42i.png" 
+          alt="Site Logo" 
+          class="logo-image"
+        />
+      </figure>
+    </a>
+
+    <nav class="header-nav">
+      <Navigation />
+    </nav>
+
+  </div>
+</header>
+
+<style>
+  /* The global bar background framework */
+  .site-header {
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  /* Keeps items locked inside a clear content grid */
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    max-width: 1024px; /* Matches normal page content layout grid */
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    box-sizing: border-box;
+  }
+
+  /* Reset figure formatting margins */
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .header-logo {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Constrain the image strictly so it doesn't blow up */
+  .logo-image {
+    height: 36px; /* Explicit maximum height constraint */
+    width: auto;   /* Prevent distortions */
+    object-fit: contain;
+    display: block;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+  }
+</style>
