@@ -6,9 +6,9 @@ layout: ../layouts/BaseLayout.astro
 # L42i
 
 
-<div class="md-carousel">
-    <div class="md-carousel-track">
-        <img src="/assets/projects/3dbox/old_rich_speaker_setup.png" alt="Setup 1" />
-        <img src="/assets/projects/3dbox/rich_speaker_setup.png" alt="Setup 2" />
-    </div>
-</div>
+## Lab for Interaction & Immersion
+
+![alt text](../../public/assets/index/crowd.jpeg)
+
+The Lab for Interaction & Immersion works at the intersection of music, science, and engineering.
+We designs instruments and systems for immersive interactive experiences - explore them as composers and performers - and understand through human-computer-interaction experiments.
