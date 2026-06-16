@@ -1,6 +1,5 @@
 ---
 // src/pages/[...id].astro
-import BaseLayout from '../layouts/BaseLayout.astro';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Carousel from '../components/Carousel.astro'; // Import the component
@@ -132,7 +131,7 @@ const Content = type === 'content' ? fileInstance.Content : null;
      ======================================================== */
   .content-post { max-width: 750px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
   
-  .category-container { max-width: 900px; margin: 3rem auto; padding: 0 1.5rem; font-family: system-ui, sans-serif; }
+  .category-container { max-width: 900px; margin: 3rem auto; padding: 0 1.5rem;}
   .category-title { font-size: 2.5rem; text-transform: capitalize; margin-bottom: 0.2rem; color: #111; }
   .category-subtitle { color: #666; margin-bottom: 2rem; font-size: 1.1rem; }
   
