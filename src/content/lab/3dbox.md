@@ -2,12 +2,7 @@
 title: 3DBox
 ---
 
-<div class="md-carousel">
-    <div class="md-carousel-track">
-        <img src="/assets/projects/3dbox/old_rich_speaker_setup.png" alt="Setup 1" />
-        <img src="/assets/projects/3dbox/rich_speaker_setup.png" alt="Setup 2" />
-    </div>
-</div>
+![](/assets/projects/3dbox/old_rich_speaker_setup.png)
 
 The 3DBox is our first version of a spatial sound system for research and creative practice. Our main objective is to provide a space that can be used across all disciplines.
 

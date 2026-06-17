@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const people = (await getCollection('people')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const current = people.filter((p) => p.data.status === 'current');
+const past = people.filter((p) => p.data.status === 'past');
+
+const linkFor = (p) =>
+  p.data.has_page ? `/people/${p.id}` : (p.data.website || null);
+---
+
+<BaseLayout title="People" variant="wide">
+  <section class="people">
+    <h2>People</h2>
+    <div class="grid">
+      {current.map((p) => {
+        const href = linkFor(p);
+        const Tag = href ? 'a' : 'div';
+        return (
+          <Tag class="tile" href={href} target={href?.startsWith('http') ? '_blank' : undefined}>
+            {p.data.img && <img src={p.data.img} alt={p.data.name} />}
+            <span class="name">{p.data.name}</span>
+            <span class="role">{p.data.role}</span>
+          </Tag>
+        );
+      })}
+    </div>
+
+    <h3>Past members</h3>
+    <div class="grid">
+      {past.map((p) => {
+        const href = linkFor(p);
+        const Tag = href ? 'a' : 'div';
+        return (
+          <Tag class="tile" href={href} target={href?.startsWith('http') ? '_blank' : undefined}>
+            {p.data.img && <img src={p.data.img} alt={p.data.name} />}
+            <span class="name">{p.data.name}</span>
+            <span class="role">{p.data.role}</span>
+          </Tag>
+        );
+      })}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
+  }
+  .tile { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+  .tile img { aspect-ratio: 1 / 1; object-fit: cover; width: 100%; border-radius: 8px; }
+  .name { font-weight: 600; margin-top: 0.5rem; }
+  .role { font-size: 0.9rem; opacity: 0.7; }
+  a.tile:hover .name { text-decoration: underline; }
+</style>

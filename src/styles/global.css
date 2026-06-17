@@ -8,9 +8,10 @@
 
 :root {
   /* --- Layout widths --- */
-  --content-width: 800px;   /* width of normal article/markdown pages */
-  --wide-width: 1024px;     /* width of category listing pages + header */
-  --content-pad: 2rem;      /* inner padding of the page column */
+  --content-width: 50rem;   /* width of normal article/markdown pages (~800px) */
+  --wide-width: 64rem;      /* width of category listing pages + header (~1024px) */
+  --content-pad: clamp(1rem, 0.7rem + 1.6vw, 2rem); /* fluid vertical page padding */
+  --gutter: 1rem;           /* min space on each side of the column */
 
   /* --- Color --- */
   --text-color: #282828;
@@ -22,7 +23,16 @@
   /* --- Typography --- */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
-  --line-height: 1.6;
+  --line-height: 1.65;
+
+  /* Fluid type scale — clamp(MIN, BASE + Nvw, MAX).
+     The "+ Nvw" part is what scales with the window / zoom level;
+     the MIN/MAX stop it getting silly on a phone or an ultrawide. */
+  --fs-body:  clamp(1rem,    0.95rem + 0.40vw, 1.20rem);  /* ~16 -> 19px */
+  --fs-small: clamp(0.9rem,  0.87rem + 0.15vw, 1.00rem);
+  --fs-h3:    clamp(1.25rem, 1.10rem + 0.70vw, 1.60rem);
+  --fs-h2:    clamp(1.50rem, 1.20rem + 1.30vw, 2.20rem);
+  --fs-h1:    clamp(1.90rem, 1.40rem + 2.20vw, 3.00rem);  /* ~30 -> 48px */
 
   /* --- Images inside content --- */
   --image-width: 80%;       /* default width of markdown images */
@@ -39,7 +49,9 @@ body {
   padding: 0;
   font-family: var(--font-sans);
   color: var(--text-color);
+  font-size: var(--fs-body);   /* fluid body text — scales with window/zoom */
   line-height: var(--line-height);
+  -webkit-text-size-adjust: 100%; /* stop iOS Safari auto-inflating text on rotate */
 }
 
 a {
@@ -50,28 +62,65 @@ a {
    2. Page columns (applied by BaseLayout's <main>)
       - .content-post : normal article / markdown column
       - .category-container : wide listing pages
+
+      width: min(100% - gutters, cap) — the column sits at its target
+      width when there's room, and shrinks to fit (reflowing) when the
+      viewport narrows, e.g. when you zoom in. No breakpoint needed.
    ============================================================ */
 .content-post {
-  width: 90%;
-  max-width: var(--content-width);
+  width: min(100% - 2 * var(--gutter), var(--content-width));
   margin: 0 auto;
-  padding: var(--content-pad) 1rem;
+  padding: var(--content-pad) 0;
   box-sizing: border-box;
 }
 
 .category-container {
-  width: 90%;
-  max-width: var(--wide-width);
+  width: min(100% - 2 * var(--gutter), var(--wide-width));
   margin: 0 auto;
-  padding: var(--content-pad) 1rem;
+  padding: var(--content-pad) 0;
   box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
-  .content-post,
-  .category-container {
-    width: 95%;
-  }
+/* ------------------------------------------------------------
+   2b. Overflow safety — keep wide content from pushing the page
+   wider than the screen. A page wider than the viewport makes
+   mobile pinch/pan janky AND lets the body scroll sideways, which
+   is what makes the sticky header misbehave on phones.
+
+   IMPORTANT: we fix overflow at the SOURCE here. Do NOT add
+   `overflow-x: hidden` to html/body — it silently disables
+   position:sticky on the header.
+   ------------------------------------------------------------ */
+.content-post,
+.category-container {
+  overflow-wrap: break-word;   /* long URLs / unbroken strings wrap, not overflow */
+}
+
+.content-post pre {
+  overflow-x: auto;            /* code blocks scroll inside their own box */
+  max-width: 100%;
+}
+
+.content-post table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;            /* wide tables scroll inside their own box */
+}
+
+/* Responsive embeds (YouTube, Vimeo, etc.). The width="560" height="315"
+   that YouTube's embed snippet bakes in is the classic mobile-overflow
+   culprit — those fixed pixels don't shrink. Override them: fit the column
+   and hold a 16:9 video frame. */
+.content-post iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  margin: 2rem auto;
+  border: 0;
+  border-radius: var(--image-radius);
 }
 
 /* ============================================================
@@ -87,6 +136,21 @@ a {
   font-family: inherit;
   font-weight: 700;
   color: var(--heading-color);
+}
+
+.content-post h1 {
+  font-size: var(--fs-h1);
+  line-height: 1.15;
+}
+
+.content-post h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.2;
+}
+
+.content-post h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.3;
 }
 
 .content-post h1,
@@ -125,6 +189,14 @@ a {
 }
 .image-row img {
   margin: 0;          /* override the centered-block rule when in a row */
+  max-width: 100%;    /* share the row width instead of overflowing */
+}
+
+/* On phones, stack the row vertically so two images can't overflow */
+@media (max-width: 600px) {
+  .image-row {
+    flex-direction: column;
+  }
 }
 
 /* ============================================================
@@ -138,6 +210,7 @@ a {
   color: var(--muted-color);
   margin-top: 0;
   margin-bottom: 2rem;
+  font-size: var(--fs-small);
 }
 .directory-list {
   list-style: none;
@@ -162,69 +235,8 @@ a {
 .file-desc {
   margin: 0.25rem 0 0;
   color: var(--muted-color);
-  font-size: 0.95rem;
+  font-size: var(--fs-small);
 }
 .empty-state {
   color: var(--muted-color);
-}
-
-/* ============================================================
-   6. Carousel (used by .md-carousel markup, e.g. lab/3dbox.md)
-      Behavior is added once by src/scripts/carousel.js
-   ============================================================ */
-.md-carousel {
-  position: relative;
-  width: 100%;
-  max-width: 750px;
-  margin: 2rem auto;
-}
-
-.md-carousel-track {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 1rem;
-  scrollbar-width: none;        /* hide scrollbar (Firefox) */
-  -ms-overflow-style: none;     /* hide scrollbar (old Edge) */
-}
-.md-carousel-track::-webkit-scrollbar {
-  display: none;                /* hide scrollbar (WebKit) */
-}
-
-.md-carousel-track img {
-  flex: 0 0 100%;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  scroll-snap-align: center;
-  border-radius: var(--image-radius);
-  margin: 0;                    /* override .content-post img centering */
-}
-
-/* prev / next buttons injected by carousel.js */
-.md-carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.md-carousel-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-.md-carousel-prev {
-  left: 0.5rem;
-}
-.md-carousel-next {
-  right: 0.5rem;
 }

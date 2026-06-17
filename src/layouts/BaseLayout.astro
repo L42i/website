@@ -1,4 +1,5 @@
 ---
+// BaseLayout.astro
 import Header from '../components/Header.astro';
 import '../styles/global.css';
 
@@ -19,7 +20,5 @@ const mainClass = variant === 'wide' ? 'category-container' : 'content-post';
     <main class={mainClass}>
       <slot />
     </main>
-
-    <script src="../scripts/carousel.js"></script>
   </body>
 </html>
