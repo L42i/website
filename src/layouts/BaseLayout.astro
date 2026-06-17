@@ -1,6 +1,8 @@
 ---
 // BaseLayout.astro
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
 import '../styles/global.css';
 
 // variant: 'article' (default narrow column) | 'wide' (category listings)
@@ -20,5 +22,7 @@ const mainClass = variant === 'wide' ? 'category-container' : 'content-post';
     <main class={mainClass}>
       <slot />
     </main>
+    <Footer />
+
   </body>
 </html>

@@ -1,0 +1,77 @@
+---
+// Footer.astro — light/minimal footer for l42i
+const year = new Date().getFullYear();
+const email = "hvc@gatech.edu"; // ← edit
+---
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <span class="footer__mark">L42i</span>
+      <p class="footer__tagline">Lab for Interaction & Immersion - Georgia Institute of Technology</p>
+    </div>
+
+    <div class="footer__contact">
+      <span class="footer__label">Get in touch</span>
+      <a href={`mailto:${email}`} class="footer__email">{email}</a>
+    </div>
+  </div>
+
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid #e5e5e5;
+    background: #fafafa;
+    color: #1a1a1a;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .footer__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .footer__mark {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .footer__tagline {
+    margin: 0.5rem 0 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  .footer__label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+    margin-bottom: 0.4rem;
+  }
+  .footer__email {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid #ccc;
+    transition: border-color 0.2s;
+  }
+  .footer__email:hover {
+    border-color: #1a1a1a;
+  }
+  .footer__bar {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.85rem 1.5rem;
+    border-top: 1px solid #e5e5e5;
+    font-size: 0.8rem;
+    color: #888;
+  }
+  @media (max-width: 540px) {
+    .footer__inner { flex-direction: column; }
+  }
+</style>
