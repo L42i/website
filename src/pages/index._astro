@@ -1,8 +1,0 @@
----
-// src/pages/index.astro
-import BaseLayout from '../layouts/BaseLayout.astro';
----
-<BaseLayout title="L42i">
-  <h1>Lab for Interaction & Immersion</h1>
-  <p></p>
-</BaseLayout>

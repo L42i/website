@@ -1,115 +1,25 @@
 ---
 import Header from '../components/Header.astro';
-// MAKE SURE THIS LINE EXISTS AND THE PATH IS CORRECT
 import '../styles/global.css';
-const { title } = Astro.props;
+
+// variant: 'article' (default narrow column) | 'wide' (category listings)
+const { title, variant = 'article' } = Astro.props;
+const mainClass = variant === 'wide' ? 'category-container' : 'content-post';
 ---
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>{title || "L42i"}</title>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title || 'L42i'}</title>
   </head>
   <body>
-    <Header /> 
-    
-    <main>
-      <div class="content-post">
-        <slot />
-      </div>
+    <Header />
+
+    <main class={mainClass}>
+      <slot />
     </main>
+
+    <script src="../scripts/carousel.js"></script>
   </body>
 </html>
-
-<style is:global>
-  /* 1. Global typography for the whole site */
-  html, body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #282828;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* 2. Image rules: 80% width and centered */
-  main img,
-  .content-post img {
-    display: block;
-    max-width: 80%;
-    height: auto;
-    margin: 2rem auto; 
-  }
-
-  /* 3. Highlighted text color */
-  .content-post strong {
-    color: #232323; 
-    font-weight: 700;
-  }
-
-  /* 4. Markdown Headings (Inherit font from body) */
-  .content-post h1,
-  .content-post h2,
-  .content-post h3,
-  .content-post h4,
-  .content-post h5,
-  .content-post h6 {
-    font-family: inherit;
-    font-weight: 700;
-  }
-
-
-  /* Ensure the container matches the layout width */
-  .content-post {
-    max-width: 800px; /* Adjust to your preferred width */
-    margin: 0 auto;   /* Centers the container */
-    padding: 2rem;    /* Ensures consistent spacing */
-  }
-
-  /* Force headers inside the container to have margins */
-  .content-post h1, 
-  .content-post h2 {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    font-family: inherit; /* Inherits font from body */
-  }
-
-  /* Ensure body text has consistent margins */
-  .content-post p {
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-  }
-
-  .main-content-wrapper {
-    display: flex;
-    gap: 2rem;
-  }
-  .sidebar { width: 250px; }
-  .content { flex: 1; }
-</style>
-
-
-<script is:inline>
-document.addEventListener('DOMContentLoaded', () => {
-    const carousels = document.querySelectorAll('.md-carousel');
-    
-    carousels.forEach(carousel => {
-        const track = carousel.querySelector('.md-carousel-track');
-        const nextBtn = carousel.querySelector('.next-btn');
-        const prevBtn = carousel.querySelector('.prev-btn');
-        let index = 0;
-
-        nextBtn.addEventListener('click', () => {
-            if (index < track.children.length - 1) {
-                index++;
-                track.style.transform = `translateX(-${index * 100}%)`;
-            }
-        });
-
-        prevBtn.addEventListener('click', () => {
-            if (index > 0) {
-                index--;
-                track.style.transform = `translateX(-${index * 100}%)`;
-            }
-        });
-    });
-});
-</script>

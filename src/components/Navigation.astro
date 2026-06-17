@@ -1,53 +1,36 @@
 ---
-// 1. Use modern Vite glob import instead of Astro.glob
-const allFiles = import.meta.glob('../pages/**/*.md', { eager: true });
-
-// 2. Convert the object maps into an array we can use
-const posts = Object.values(allFiles);
-
-// 3. Dynamically extract your top-level folder names (e.g., 'projects', 'courses')
-const sections = ['lab', 'projects', 'courses', '3d-contest'];
-
-// Define the mapping of IDs (folders) to readable labels
+// Top-level section links. Add a section here to add a nav item.
 const categoryLinks = [
   { id: 'lab', label: 'Lab' },
   { id: 'projects', label: 'Projects' },
   { id: 'courses', label: 'Courses' },
   { id: '3d-contest', label: '3DContest' },
-];---
+];
+---
 
 <div class="nav-menu-wrapper">
   <ul class="nav-links">
-
     {categoryLinks.map((link) => (
       <li>
-        <a href={`/${link.id}`} class="nav-item">
-          {link.label}
-        </a>
+        <a href={`/${link.id}`} class="nav-item">{link.label}</a>
       </li>
     ))}
   </ul>
 </div>
 
 <style>
-  /* Reset and style everything into a single horizontal bar alignment */
-  .nav-menu-wrapper {
-    display: block;
-  }
-
   .nav-links {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* Spaces out your menu links evenly */
+    gap: 1.5rem;
   }
 
-  /* Modern, sleek text links with hover shapes */
   .nav-item {
     text-decoration: none;
-    color: #4b5563; /* Smooth slate gray text */
+    color: #4b5563;
     font-size: 0.95rem;
     font-weight: 500;
     padding: 0.5rem 0.75rem;
@@ -56,22 +39,16 @@ const categoryLinks = [
     display: inline-block;
   }
 
-  /* Interaction states */
   .nav-item:hover {
-    color: #111827; /* Near black text on hover */
-    background-color: #f3f4f6; /* Modern light-gray pill background */
+    color: #111827;
+    background-color: #f3f4f6;
   }
-
-  .capitalize {
-    text-transform: capitalize;
-  }
-
 
   @media (max-width: 600px) {
-    nav {
-        flex-direction: column; /* Stacks menu items vertically */
-        align-items: center;    /* Centers them horizontally */
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
     }
-}
-
+  }
 </style>

@@ -1,151 +1,135 @@
 ---
 // src/pages/[...id].astro
+// Content lives in src/content/<category>/*.md. Folders define the menu
+// categories; URLs are FLAT by default (/bikes), and hierarchical only for
+// the categories you opt in below (/courses/dsp).
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Carousel from '../components/Carousel.astro'; // Import the component
-
-// Define your images here
-const projectImages = [
-  '/assets/projects/3dbox/old_rich_speaker_setup.png',
-  '/assets/projects/3dbox/rich_speaker_setup.png'
-];
 
 export async function getStaticPaths() {
-  // Pull all markdown files from the content directory
-  const markdownFiles = import.meta.glob('/src/pages/**/*.{md,markdown}', { eager: true });
-  
-  // DIAGNOSTIC LOG: See exactly what paths Vite finds in your terminal
-  console.log("All discovered markdown files:", Object.keys(markdownFiles));
+  // ── URL policy ────────────────────────────────────────────────────────────
+  // Categories listed here keep their folder in the URL (e.g. /courses/dsp).
+  // Every other category is served flat (e.g. /bikes). Add "events" etc. here
+  // whenever you want that category to be hierarchical.
+  const NESTED_CATEGORIES = new Set(['courses', 'events', '3d-contest']);
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Title fallback chain: frontmatter.title -> first H1 -> prettified slug
+  const deriveTitle = (fileInstance, slug) => {
+    const fm = fileInstance.frontmatter || {};
+    if (fm.title) return fm.title;
+    const h1 = fileInstance.getHeadings?.().find((h) => h.depth === 1);
+    if (h1?.text) return h1.text;
+    return slug.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
+  const markdownFiles = import.meta.glob('/src/content/**/*.{md,markdown}', {
+    eager: true,
+  });
+
+  // Parse every file into a normalized entry.
+  const entries = Object.entries(markdownFiles).map(([filePath, fileInstance]) => {
+    const parts = filePath.split('/');
+    const category = parts[parts.indexOf('content') + 1] || '';
+    const slug = parts[parts.length - 1].replace(/\.(md|markdown)$/, '');
+    const nested = NESTED_CATEGORIES.has(category);
+    return {
+      filePath,
+      fileInstance,
+      category,
+      slug,
+      // The route id: "courses/dsp" if nested, otherwise just "dsp".
+      url: nested ? `${category}/${slug}` : slug,
+    };
+  });
 
   const paths = [];
+  const seen = new Map(); // route id -> source file (collision guard)
 
-  // 1. Generate individual pages for each markdown file
-  Object.entries(markdownFiles).forEach(([filePath, fileInstance]) => {
-    const filename = filePath.split('/').pop().replace(/\.(md|markdown)$/, '');
-    
-    // Skip index to avoid collision
-    if (filename === 'index') return;
-
-    // Determine the category folder (e.g., 'projects', 'courses')
-    const folderSegments = filePath.split('/');
-    const contentIndex = folderSegments.indexOf('content');
-    const collection = contentIndex !== -1 ? folderSegments[contentIndex + 1] : '';
-
+  // 1. One page per markdown file.
+  for (const e of entries) {
+    if (e.slug === 'index') continue;
+    if (seen.has(e.url)) {
+      console.warn(
+        `[routing] Duplicate URL "/${e.url}": keeping ${seen.get(e.url)}, ` +
+          `skipping ${e.filePath}. Rename one file, or make its category nested.`
+      );
+      continue;
+    }
+    seen.set(e.url, e.filePath);
     paths.push({
-      params: { id: filename },
-      props: { type: 'content', fileInstance, collection }
+      params: { id: e.url },
+      props: {
+        type: 'content',
+        fileInstance: e.fileInstance,
+        title: deriveTitle(e.fileInstance, e.slug),
+      },
     });
-  });
+  }
 
-  // 2. Generate explicit list pages for your categories
-  const categories = ['projects', 'courses', '3d-contest', 'lab'];
-  
-  categories.forEach((category) => {
-    // Filter files matching this folder exactly (case-insensitive check)
-    const categoryFiles = Object.entries(markdownFiles)
-      .filter(([filePath]) => filePath.toLowerCase().includes(`/src/pages/${category.toLowerCase()}/`))
-      .map(([filePath, fileInstance]) => ({
-        slug: filePath.split('/').pop().replace(/\.(md|markdown)$/, ''),
-        frontmatter: fileInstance.frontmatter || {}
+  // 2. One listing page per category folder (served at /<category>).
+  const categories = [...new Set(entries.map((e) => e.category).filter(Boolean))];
+  for (const category of categories) {
+    if (seen.has(category)) {
+      console.warn(
+        `[routing] Category "/${category}" clashes with a flat page of the ` +
+          `same name (${seen.get(category)}); skipping the listing page.`
+      );
+      continue;
+    }
+    const files = entries
+      .filter((e) => e.category === category && e.slug !== 'index')
+      .map((e) => ({
+        url: e.url, // correct link target, flat or nested
+        title: deriveTitle(e.fileInstance, e.slug),
+        description: e.fileInstance.frontmatter?.description ?? null,
       }));
-
-    console.log(`Category [${category}] found ${categoryFiles.length} files.`);
-
     paths.push({
       params: { id: category },
-      props: { type: 'category', categoryName: category, files: categoryFiles }
+      props: { type: 'category', categoryName: category, files },
     });
-  });
+  }
 
   return paths;
 }
 
-const { type, fileInstance, categoryName, files } = Astro.props;
+const { type, fileInstance, title, categoryName, files } = Astro.props;
 const Content = type === 'content' ? fileInstance.Content : null;
 ---
 
-{type === 'content' ? (
-  /* Individual Markdown Page Layout */
-  <BaseLayout title={fileInstance.frontmatter?.title || "Content"}>
-    <article class="content-post">
-      {/* <h1>{fileInstance.frontmatter?.title || "Untitled Page"}</h1> */}
-      {Content && <Content />}
-    </article>
-  </BaseLayout>
-) : (
-  /* Directory Grid / List Overview Layout */
-  <BaseLayout title={`${categoryName} Catalog`}>
-    <div class="category-container">
+{
+  type === 'content' ? (
+    <BaseLayout title={title}>
+      <Content />
+    </BaseLayout>
+  ) : (
+    <BaseLayout title={categoryName} variant="wide">
       <h1 class="category-title">{categoryName}</h1>
-      <p class="category-subtitle">Browsing all available files in the {categoryName} archive.</p>
-      
+      <p class="category-subtitle">
+        Browsing all available files in the {categoryName} archive.
+      </p>
+
       {files.length === 0 ? (
         <div class="empty-state">
-          <p>No markdown documents found matching <code>src/pages/{categoryName}/</code> yet.</p>
-          <small>Make sure your markdown files exist in that directory and end with a <code>.md</code> extension.</small>
+          <p>
+            No markdown documents found in{' '}
+            <code>src/content/{categoryName}/</code> yet.
+          </p>
         </div>
       ) : (
         <ul class="directory-list">
-          {files.map((file) => {
-            // SANITATION FIX: Scrub layout tags or broken symbols from link strings
-            let cleanTitle = file.frontmatter.title || file.slug;
-            cleanTitle = cleanTitle.replace(/3dbox|ðŸ“„/g, '').trim();
-
-            return (
-              <li class="directory-item">
-                <a href={`/${file.slug}`} class="directory-link">
- 
-                  <div class="file-info">
-                    <strong class="file-title">{cleanTitle}</strong>
-                    {file.frontmatter.description && <p class="file-desc">{file.frontmatter.description}</p>}
-                  </div>
-                </a>
-              </li>
-            );
-          })}
+          {files.map((file) => (
+            <li class="directory-item">
+              <a href={`/${file.url}`} class="directory-link">
+                <div class="file-info">
+                  <strong class="file-title">{file.title}</strong>
+                  {file.description && <p class="file-desc">{file.description}</p>}
+                </div>
+              </a>
+            </li>
+          ))}
         </ul>
       )}
-    </div>
-  </BaseLayout>
-)}
-
-<style is:global>
-  /* ========================================================
-     Markdown Layout Tweaks (Centering Images & Strong Color)
-     ======================================================== */
-  
-  /* DEFAULT IMAGE RULE: 80% width and perfectly centered block */
-  .content-post img {
-    display: block;
-    max-width: 80%;
-    height: auto;
-    margin: 2.5rem auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-
- 
-
-  /* ========================================================
-     Existing Layout Elements
-     ======================================================== */
-  .content-post { max-width: 750px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
-  
-  .category-container { max-width: 900px; margin: 3rem auto; padding: 0 1.5rem;}
-  .category-title { font-size: 2.5rem; text-transform: capitalize; margin-bottom: 0.2rem; color: #111; }
-  .category-subtitle { color: #666; margin-bottom: 2rem; font-size: 1.1rem; }
-  
-  .empty-state { background: #f9f9f9; border: 2px dashed #ddd; border-radius: 8px; padding: 2rem; text-align: center; color: #555; }
-  .empty-state code { background: #eee; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; }
-  
-  .directory-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem; }
-  .directory-item { border: 1px solid #e1e4e8; border-radius: 6px; transition: transform 0.2s, box-shadow 0.2s; background: #fff; }
-  .directory-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #0076ff; }
-  
-  .directory-link { display: flex; align-items: start; gap: 1rem; padding: 1.2rem; text-decoration: none; color: inherit; }
-  .file-icon { font-size: 1.8rem; margin-top: 0.1rem; }
-  .file-info { display: flex; flex-direction: column; gap: 0.2rem; }
-  .file-title { color: #0076ff; font-size: 1.2rem; }
-  .directory-item:hover .file-title { text-decoration: underline; }
-  .file-desc { color: #555; margin: 0; font-size: 0.95rem; }
-</style>
+    </BaseLayout>
+  )
+}

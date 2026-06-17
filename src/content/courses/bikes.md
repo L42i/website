@@ -8,7 +8,7 @@
     <img src="/assets/courses/bikes/four.png" />
 </center>
 
-Launched in Spring 2025, the [BIKES](/projects/bikes) project aims at creating **a moving networked musical instrument** We will have four cargo bikes, each equipped with a PA loudspeaker and a Raspberry Pi – all connected via WiFi, running SuperCollider and other free tools.
+Launched in Spring 2025, the [BIKES](/bikes) project aims at creating **a moving networked musical instrument** We will have four cargo bikes, each equipped with a PA loudspeaker and a Raspberry Pi – all connected via WiFi, running SuperCollider and other free tools.
 At the center of the Fall 2025 version, we will explore different concepts to compose for - and perform with this instrument. As a group we will work on a series of public interventions, in collaboration with local public communities. Besides building a unique instrument, the goal of the BIKES project is to understand the status quo of transport in the Atlanta area and to challenge the urban soundscape.
 
-Learn more about [BIKES](/projects/bikes)
+Learn more about [BIKES](/bikes)
