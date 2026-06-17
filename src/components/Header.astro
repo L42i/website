@@ -36,13 +36,15 @@ import Navigation from './Navigation.astro';
   }
 
   /* Keeps items locked inside a clear content grid */
-  .header-container {
+    .header-container {
     display: flex;
     align-items: center;
-    justify-content: space-between; 
-    max-width: 1024px; /* Matches normal page content layout grid */
+    justify-content: space-between;
+
+    /* Match the column formula exactly instead of hardcoded 1024px */
+    width: min(100% - 2 * var(--gutter), var(--wide-width));
     margin: 0 auto;
-    padding: 1rem 1.5rem;
+    padding-block: 1rem;   /* vertical only — horizontal comes from the width formula */
     box-sizing: border-box;
   }
 
