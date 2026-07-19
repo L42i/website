@@ -8,6 +8,20 @@
 
 With BIKES we turn a fleet of four cargo bikes into a moving networked instrument for experimental music and sound art. Equipped with powerful PA loudspeakers, a computer and a touch interface, the bikes are designed to interact with our acoustic environment. In public interventions and installations, the BIKES aim at enriching, contrasting and challenging the urban soundscape and acoustics. The BIKES can be used while riding or taken to any location for immediate installation. This opens up completely new possibilities for composition and performance, while increasing accessibility and supporting alternative modes of transportation.
 
+## Publications
+
+<p class="citation">Henrik von Coler: <a href="https://nime2026.org/...">Sonic Interactions as Situated Urban Practice with BIKES</a>, <em>Proceedings of the International Conference on New Interfaces for Musical Expression (NIME)</em>, 2026</p>
+
+<p class="citation">Laura Call Gomez, Gabriel Decker, Jayson Faupel, Aditya Rajesh Pawar, Jacob Westerstahl, Henrik von Coler: <a href="https://nime2026.org/...">BIKES: A Moving Networked Music Instrument in Interdisciplinary Research and Education</a>, <em>Proceedings of the International Computer Music Conference</em>, 2026</p>
+
+<p class="citation">Orlando Kenny, Laura Call Gomez, Shirin Sathe, Henrik von Coler: <a href="https://nime2026.org/...">BIKES: A Moving Network Instrument for Music and Sound Art</a>, <em>IEEE International Symposium on the Internet of Sounds</em>, 2025</p>
+
+ 
+----
+
+<details>
+    <summary><h3>Documentation</h3></summary>
+
 ### Interactive installation
 The BIKES were shown in an interactive installation at the Spring 2025 Launchpad showcase of the School of Industrial Design at Georgia Tech:
 
@@ -26,6 +40,8 @@ We were invited to join the Inman Park Parade in April 2025. This was the first 
 </center>
 
 <center><i>The BIKES in movement at Inman Park Parade.</i></center>
+
+</details>
 
 <details>
     <summary><h3>The Team</h3></summary>

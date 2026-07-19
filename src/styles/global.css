@@ -240,3 +240,19 @@ a {
 .empty-state {
   color: var(--muted-color);
 }
+
+
+/* ============================================================
+   6. Inline citations — use in markdown as <p class="citation">
+   ============================================================ */
+.citation {
+  font-size: var(--fs-small);
+  color: var(--muted-color);
+  margin-block: 1.5rem;
+}
+
+.citation a {
+  color: var(--muted-color);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
