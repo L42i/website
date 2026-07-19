@@ -5,6 +5,8 @@
 // the categories you opt in below (/courses/dsp).
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Publications from '../components/Publications.astro';
+import { pubsFor } from '../lib/bibtex';
 
 export async function getStaticPaths() {
   // ── URL policy ────────────────────────────────────────────────────────────
@@ -63,6 +65,11 @@ export async function getStaticPaths() {
         type: 'content',
         fileInstance: e.fileInstance,
         title: deriveTitle(e.fileInstance, e.slug),
+        // Optional bibliography: add `bib: bikes` (or a list) to the
+        // markdown frontmatter and src/data/bib/bikes.bib gets rendered
+        // as a Publications section below the content.
+        bib: e.fileInstance.frontmatter?.bib ?? null,
+        bibHeading: e.fileInstance.frontmatter?.bibHeading ?? 'Publications',
       },
     });
   }
@@ -93,14 +100,19 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { type, fileInstance, title, categoryName, files } = Astro.props;
+const { type, fileInstance, title, categoryName, files, bib, bibHeading } =
+  Astro.props;
 const Content = type === 'content' ? fileInstance.Content : null;
+
+// Empty array when no `bib:` frontmatter — Publications renders nothing.
+const pubs = type === 'content' ? pubsFor(bib) : [];
 ---
 
 {
   type === 'content' ? (
     <BaseLayout title={title}>
       <Content />
+      <Publications pubs={pubs} heading={bibHeading} />
     </BaseLayout>
   ) : (
     <BaseLayout title={categoryName} variant="wide">
