@@ -1,3 +1,10 @@
+---
+order: 5
+bib: mesh
+img: /assets/projects/mesh/crowd.jpeg
+description: Network meta-instruments for enhanced interaction in music performance.
+bibPosition: drawer      # plain | collapse | drawer
+---
 # MËSH
 
 

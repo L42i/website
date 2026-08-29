@@ -6,6 +6,7 @@
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Publications from '../components/Publications.astro';
+import ContentList from '../components/ContentList.astro';
 import { pubsFor } from '../lib/bibtex';
 
 export async function getStaticPaths() {
@@ -28,6 +29,70 @@ export async function getStaticPaths() {
   const markdownFiles = import.meta.glob('/src/content/**/*.{md,markdown}', {
     eager: true,
   });
+
+  // Same files as raw text, so a listing thumbnail can be pulled from the
+  // first image already in the page body. Avoids hand-adding `img:` to
+  // every file; frontmatter still wins when present.
+  const rawFiles = import.meta.glob('/src/content/**/*.{md,markdown}', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  });
+
+  const MD_IMG = /!\[[^\]]*\]\(\s*([^)\s]+)/;      // ![alt](/path.jpg)
+  const HTML_IMG = /<img[^>]+src=["']([^"']+)["']/i; // <img src="/path.jpg">
+
+  // Excerpt chain: frontmatter.description -> first real prose paragraph.
+  // Works block by block so bullet lists (course registration details),
+  // headings, images and italic captions are skipped rather than scraped.
+  const deriveDescription = (fileInstance, filePath, limit = 150) => {
+    const fm = fileInstance.frontmatter || {};
+    if (fm.description) return fm.description;
+
+    let raw = rawFiles[filePath];
+    if (typeof raw !== 'string') return null;
+
+    raw = raw.replace(/^---\n[\s\S]*?\n---\n/, '');
+    raw = raw.replace(/```[\s\S]*?```/g, '\n\n');
+    raw = raw.replace(
+      /<(script|style|iframe|pre|audio|video|details)[^>]*>[\s\S]*?<\/\1>/gi,
+      '\n\n'
+    );
+
+    for (const block of raw.split(/\n\s*\n/)) {
+      let b = block.trim();
+      if (!b) continue;
+      if (b.startsWith('#')) continue;                  // heading
+      if (/^\s*[-*+]\s/.test(b)) continue;              // bullet list
+      if (/^\s*\d+\.\s/.test(b)) continue;              // numbered list
+      if (b.startsWith('---') || b.startsWith('|')) continue;
+
+      b = b.replace(/!\[[^\]]*\]\([^)]*\)/g, '');       // images
+      b = b.replace(/<[^>]+>/g, ' ');                   // html tags
+      b = b.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');    // links -> text
+
+      // A whole line in italics is a caption, not a summary.
+      if (/^[_*][\s\S]+[_*]$/.test(b.trim())) continue;
+
+      b = b.replace(/[*_`>]/g, '');
+      b = b.replace(/\s+/g, ' ').trim();
+      if (b.length < 40) continue;                      // too short to be prose
+      if (b.length <= limit) return b;
+      return b.slice(0, limit).replace(/\s+\S*$/, '').replace(/[ ,;:.]+$/, '') + '\u2026';
+    }
+    return null;
+  };
+
+  // Thumbnail chain: frontmatter.img -> frontmatter.image -> first body image
+  const deriveImage = (fileInstance, filePath) => {
+    const fm = fileInstance.frontmatter || {};
+    if (fm.img) return fm.img;
+    if (fm.image) return fm.image;
+    const raw = rawFiles[filePath];
+    if (typeof raw !== 'string') return null;
+    const m = raw.match(MD_IMG) || raw.match(HTML_IMG);
+    return m ? m[1] : null;
+  };
 
   // Parse every file into a normalized entry.
   const entries = Object.entries(markdownFiles).map(([filePath, fileInstance]) => {
@@ -70,6 +135,12 @@ export async function getStaticPaths() {
         // as a Publications section below the content.
         bib: e.fileInstance.frontmatter?.bib ?? null,
         bibHeading: e.fileInstance.frontmatter?.bibHeading ?? 'Publications',
+        // 'side'   = sticky right column
+        // 'drawer' = pinned bottom drawer at all widths
+        // 'inline' (default) = marker position, else bottom of the page
+        bibPosition: e.fileInstance.frontmatter?.bibPosition ?? 'inline',
+        // mobile: 'plain' (default) | 'collapse' | 'drawer'
+        bibMobile: e.fileInstance.frontmatter?.bibMobile ?? 'plain',
       },
     });
   }
@@ -84,35 +155,114 @@ export async function getStaticPaths() {
       );
       continue;
     }
-    const files = entries
+    const all = entries
       .filter((e) => e.category === category && e.slug !== 'index')
       .map((e) => ({
         url: e.url, // correct link target, flat or nested
         title: deriveTitle(e.fileInstance, e.slug),
-        description: e.fileInstance.frontmatter?.description ?? null,
-      }));
+        description: deriveDescription(e.fileInstance, e.filePath),
+        img: deriveImage(e.fileInstance, e.filePath),
+        // `status:` controls prominence in the listing.
+        //   active   (default) full row with thumbnail and excerpt
+        //   minor    compact text row, directly under the active ones
+        //   archived compact text row, under an "Earlier" heading
+        // Every page stays reachable at the same URL in all three cases.
+        // `archived: true` is still honoured as a shorthand.
+        status: (() => {
+          const fm = e.fileInstance.frontmatter || {};
+          if (fm.archived === true) return 'archived';
+          const v = String(fm.status ?? 'active').toLowerCase();
+          return ['active', 'minor', 'archived'].includes(v) ? v : 'active';
+        })(),
+        // `order:` sets the position in the listing, ASCENDING —
+        // `order: 1` is first. Files without one sort to the bottom,
+        // alphabetically, so a new page is visible but never jumps the
+        // queue. Archived entries are ordered among themselves.
+        order: Number.isFinite(Number(e.fileInstance.frontmatter?.order))
+          ? Number(e.fileInstance.frontmatter.order)
+          : Infinity,
+      }))
+      .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+
     paths.push({
       params: { id: category },
-      props: { type: 'category', categoryName: category, files },
+      props: {
+        type: 'category',
+        categoryName: category,
+        files: all.filter((f) => f.status === 'active'),
+        minorFiles: all.filter((f) => f.status === 'minor'),
+        archivedFiles: all.filter((f) => f.status === 'archived'),
+      },
     });
   }
 
   return paths;
 }
 
-const { type, fileInstance, title, categoryName, files, bib, bibHeading } =
-  Astro.props;
+// Section headings for the two lower tiers of a category listing.
+// `active` pages are the unlabelled full rows at the top.
+const MINOR_HEADING = 'More';
+const ARCHIVE_HEADING = 'Archive';
+
+const { type, fileInstance, title, categoryName, files, minorFiles, archivedFiles,
+        bib, bibHeading,
+        bibPosition, bibMobile } = Astro.props;
 const Content = type === 'content' ? fileInstance.Content : null;
 
 // Empty array when no `bib:` frontmatter — Publications renders nothing.
 const pubs = type === 'content' ? pubsFor(bib) : [];
+
+// `bibPosition: side` puts the list in a sticky, independently-scrolling
+// right-hand column instead of in the flow of the article.
+const useSidebar = pubs.length > 0 && bibPosition === 'side';
+
+// `bibPosition: drawer` pins it to the bottom of the viewport on desktop too.
+const useDrawer = pubs.length > 0 && bibPosition === 'drawer';
+
+// ── Bibliography placement ────────────────────────────────────────────────
+// Put <!--bib--> anywhere in the markdown to control where the publications
+// section appears. With no marker (or no bib), the page renders normally via
+// <Content /> and the section is appended at the end.
+//
+// When a marker IS present we render the compiled HTML directly instead of
+// <Content />, so we can split it in two and slot the section between.
+// Skipped entirely in sidebar mode — there the list isn't in the flow.
+const BIB_MARKER = '<!--bib-->';
+let bibSplit: [string, string] | null = null;
+
+if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
+  const html = String((await fileInstance.compiledContent?.()) ?? '');
+  const at = html.indexOf(BIB_MARKER);
+  if (at !== -1) {
+    bibSplit = [html.slice(0, at), html.slice(at + BIB_MARKER.length)];
+  }
+}
 ---
 
 {
   type === 'content' ? (
-    <BaseLayout title={title}>
-      <Content />
-      <Publications pubs={pubs} heading={bibHeading} />
+    <BaseLayout title={title} variant={useSidebar ? 'sidebar' : 'article'}>
+      {useSidebar ? (
+        <>
+          <div class="content-post sidebar-main">
+            <Content />
+          </div>
+          <aside class="sidebar-aside">
+            <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
+          </aside>
+        </>
+      ) : bibSplit ? (
+        <>
+          <Fragment set:html={bibSplit[0]} />
+          <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
+          <Fragment set:html={bibSplit[1]} />
+        </>
+      ) : (
+        <>
+          <Content />
+          <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
+        </>
+      )}
     </BaseLayout>
   ) : (
     <BaseLayout title={categoryName} variant="wide">
@@ -121,7 +271,7 @@ const pubs = type === 'content' ? pubsFor(bib) : [];
         Browsing all available files in the {categoryName} archive.
       </p>
 
-      {files.length === 0 ? (
+      {files.length === 0 && minorFiles.length === 0 && archivedFiles.length === 0 ? (
         <div class="empty-state">
           <p>
             No markdown documents found in{' '}
@@ -129,18 +279,27 @@ const pubs = type === 'content' ? pubsFor(bib) : [];
           </p>
         </div>
       ) : (
-        <ul class="directory-list">
-          {files.map((file) => (
-            <li class="directory-item">
-              <a href={`/${file.url}`} class="directory-link">
-                <div class="file-info">
-                  <strong class="file-title">{file.title}</strong>
-                  {file.description && <p class="file-desc">{file.description}</p>}
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <ContentList items={files} />
+      )}
+
+      {minorFiles && minorFiles.length > 0 && (
+        <section class="minor-section">
+          <h2 class="minor-title">{MINOR_HEADING}</h2>
+          <ContentList items={minorFiles} layout="compact" />
+        </section>
+      )}
+
+      {/* Archived pages are the least prominent tier: collapsed to a single
+          line, so they stay reachable without competing for attention.
+          Plain <details> — closed by default, no script needed. */}
+      {archivedFiles && archivedFiles.length > 0 && (
+        <details class="archive-section">
+          <summary class="archive-title">
+            {ARCHIVE_HEADING}
+            <span class="archive-count">{archivedFiles.length}</span>
+          </summary>
+          <ContentList items={archivedFiles} layout="compact" />
+        </details>
       )}
     </BaseLayout>
   )

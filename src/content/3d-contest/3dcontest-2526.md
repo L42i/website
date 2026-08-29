@@ -1,3 +1,6 @@
+---
+order: 1
+---
 # 25-26 GA3D Contest
 
 In the 25-26 academic year, **UGA Dancz Center for New Music** and **Georgia Tech's School of Music** held the first **GA3D** composition contest.

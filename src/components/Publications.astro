@@ -1,0 +1,151 @@
+---
+/**
+ * src/components/Publications.astro
+ *
+ * Renders a Pub[] as muted citations, matching the hand-authored
+ * `.citation` style. Format: First Last, First Last: Title, Venue, Year
+ *
+ * Props
+ *   mobile  'plain' | 'collapse' | 'drawer'  — small-screen behaviour
+ *   drawer  boolean                          — pin as a drawer on DESKTOP too
+ *
+ * Collapsible variants render as <details open> so the content is present
+ * without JS and for crawlers; a small inline script closes it where the
+ * drawer/collapse behaviour actually applies.
+ */
+
+import type { Pub } from '../lib/bibtex';
+
+interface Props {
+  pubs: Pub[];
+  heading?: string | false;
+  grouped?: boolean;
+  mobile?: 'plain' | 'collapse' | 'drawer';
+  drawer?: boolean;
+}
+
+const {
+  pubs,
+  heading = 'Publications',
+  grouped = false,
+  mobile = 'plain',
+  drawer = false,
+} = Astro.props;
+
+const collapsible = drawer || mobile === 'collapse' || mobile === 'drawer';
+const label = heading === false ? 'Publications' : heading;
+
+const classes = [
+  'pub-section',
+  collapsible && 'pub-collapse',
+  mobile === 'drawer' && 'pub-drawer-m',   // fixed on mobile
+  drawer && 'pub-drawer-d',                // fixed at all widths
+].filter(Boolean);
+
+const groups: [number | null, Pub[]][] = grouped
+  ? [...pubs.reduce((m, p) => {
+      m.set(p.year, [...(m.get(p.year) ?? []), p]);
+      return m;
+    }, new Map<number, Pub[]>()).entries()].sort(([a], [b]) => b - a)
+  : [[null, pubs]];
+
+/** Best available link: explicit url, then DOI, then PDF. */
+const linkFor = (p: Pub) =>
+  p.url ?? (p.doi ? `https://doi.org/${p.doi}` : undefined) ?? p.pdf;
+---
+
+{pubs.length > 0 && (
+  collapsible ? (
+    <details class:list={classes} open>
+      <summary class="pub-summary">
+        <span class="pub-summary-label">
+          {label}
+          <span class="pub-count">{pubs.length}</span>
+        </span>
+      </summary>
+      <div class="pub-body">
+        {groups.map(([year, entries]) => (
+          <>
+            {year !== null && <h3 class="pub-year">{year || 'n.d.'}</h3>}
+            {entries.map((pub) => {
+              const href = linkFor(pub);
+              return (
+                <p class="citation" id={`pub-${pub.key}`}>
+                  {pub.authors.length > 0 && <>{pub.authors.join(', ')}: </>}
+                  {href ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer">{pub.title}</a>
+                  ) : pub.title}
+                  {pub.venue && <>, <em>{pub.venue}</em></>}
+                  {pub.year ? <>, {pub.year}</> : null}
+                  {pub.pdf && href !== pub.pdf && (
+                    <> <a href={pub.pdf} target="_blank" rel="noopener noreferrer">[PDF]</a></>
+                  )}
+                </p>
+              );
+            })}
+          </>
+        ))}
+      </div>
+    </details>
+  ) : (
+    <section class="pub-section">
+      {heading !== false && <h2 class="pub-heading">{heading}</h2>}
+      {groups.map(([year, entries]) => (
+        <>
+          {year !== null && <h3 class="pub-year">{year || 'n.d.'}</h3>}
+          {entries.map((pub) => {
+            const href = linkFor(pub);
+            return (
+              <p class="citation" id={`pub-${pub.key}`}>
+                {pub.authors.length > 0 && <>{pub.authors.join(', ')}: </>}
+                {href ? (
+                  <a href={href} target="_blank" rel="noopener noreferrer">{pub.title}</a>
+                ) : pub.title}
+                {pub.venue && <>, <em>{pub.venue}</em></>}
+                {pub.year ? <>, {pub.year}</> : null}
+                {pub.pdf && href !== pub.pdf && (
+                  <> <a href={pub.pdf} target="_blank" rel="noopener noreferrer">[PDF]</a></>
+                )}
+              </p>
+            );
+          })}
+        </>
+      ))}
+    </section>
+  )
+)}
+
+{collapsible && (
+  <script is:inline>
+    /* Ships open so the list exists without JS; collapse it only where the
+       drawer/collapse styling actually applies. Inline (not deferred) to
+       avoid a flash of the expanded panel. */
+    (function () {
+      var narrow = window.matchMedia('(max-width: 60rem)').matches;
+      document.querySelectorAll('details.pub-collapse[open]').forEach(function (d) {
+        var always = d.classList.contains('pub-drawer-d');
+        if (always || narrow) d.removeAttribute('open');
+      });
+    })();
+  </script>
+)}
+
+<style>
+  .pub-section { margin-top: 2.5rem; }
+
+  .pub-heading {
+    font-size: var(--fs-h2);
+    color: var(--heading-color);
+    margin-bottom: 1rem;
+  }
+
+  .pub-year {
+    font-size: var(--fs-h3);
+    color: var(--heading-color);
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Drawer chrome lives in global.css section 8 — it needs to position
+     against the viewport, outside this component's scoped styles. */
+</style>

@@ -2,7 +2,7 @@
 name: Tristan Peng
 role: PhD Student
 status: current
-order: 2
+order: 1
 img: /assets/people/tristan.jpg
 website: https://ccrma.stanford.edu/~pengt
 has_page: true

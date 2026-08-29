@@ -1,3 +1,7 @@
+---
+order: 3
+status: archived
+---
 # Fall 2025: Spatial Audio I
 
 - Grad: [Special Topics - 93498 - MUSI 8803 - G](https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in=202508&crn_in=93498)

@@ -1,5 +1,8 @@
 ---
+order: 1
 title: 3DBox
+description: Immersive sound system with 29 channels for research and artistic practice.
+img: /assets/projects/3dbox/rich_speaker_setup.png
 ---
 
 ![](/assets/projects/3dbox/old_rich_speaker_setup.png)
@@ -10,7 +13,6 @@ The 3DBox is our first version of a spatial sound system for research and creati
 
 The 3DBox sound system consists of 28 Neumann KH120 MKII loudspeakers, mounted on aluminum trusses.
  
-
 - Dimensions: 4.7 x 5.2 x 3.7 meters
 - AES67 ready speakers, combined with a DANTE network.
 

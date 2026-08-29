@@ -1,0 +1,138 @@
+---
+/**
+ * src/components/TileGrid.astro
+ *
+ * Image-card listing for category pages (projects, courses, lab, ...).
+ * Mirrors the People tiles, but with a landscape crop and an optional
+ * description line.
+ *
+ * Items are a normalized shape so any source can feed this:
+ *   { url, title, description?, img? }
+ *
+ * Tiles with no image get a muted placeholder showing the first letter,
+ * so a missing asset never collapses the grid layout.
+ */
+
+export interface Tile {
+  url: string;
+  title: string;
+  description?: string | null;
+  img?: string | null;
+}
+
+interface Props {
+  items: Tile[];
+  /** CSS aspect-ratio for the image area. Default landscape 3/2. */
+  aspect?: string;
+  /** Minimum tile width before the grid reflows. */
+  min?: string;
+}
+
+const { items, aspect = '3 / 2', min = '15rem' } = Astro.props;
+---
+
+<div
+  class="tile-grid"
+  style={`--tile-aspect: ${aspect}; --tile-min: ${min};`}
+>
+  {items.map((item) => (
+    <a class="tile-card" href={`/${item.url}`.replace(/^\/\//, '/')}>
+      <div class="tile-media">
+        {item.img ? (
+          <img src={item.img} alt="" loading="lazy" decoding="async" />
+        ) : (
+          <span class="tile-placeholder" aria-hidden="true">
+            {item.title.trim().charAt(0).toUpperCase()}
+          </span>
+        )}
+      </div>
+      <div class="tile-text">
+        <strong class="tile-title">{item.title}</strong>
+        {item.description && <p class="tile-desc">{item.description}</p>}
+      </div>
+    </a>
+  ))}
+</div>
+
+<style>
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
+    gap: 1.75rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .tile-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;              /* let long titles wrap instead of stretching */
+  }
+
+  .tile-media {
+    position: relative;
+    aspect-ratio: var(--tile-aspect);
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--rule-color);
+  }
+
+  .tile-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+  }
+
+  .tile-card:hover .tile-media img {
+    transform: scale(1.03);
+  }
+
+  /* Shown when a page has no usable image. */
+  .tile-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--muted-color);
+    opacity: 0.55;
+  }
+
+  .tile-text {
+    margin-top: 0.6rem;
+  }
+
+  .tile-title {
+    display: block;
+    font-weight: 600;
+    color: var(--heading-color);
+    line-height: 1.3;
+  }
+
+  .tile-card:hover .tile-title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .tile-desc {
+    margin: 0.2rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--muted-color);
+    line-height: 1.45;
+  }
+
+  /* Two across on small screens rather than one — these are wide crops
+     and a single column wastes a lot of vertical space. */
+  @media (max-width: 34rem) {
+    .tile-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem 0.85rem;
+    }
+    .tile-placeholder { font-size: 1.75rem; }
+  }
+</style>

@@ -1,8 +1,13 @@
 ---
+order: 1
 bib: bikes
+bibPosition: drawer      # plain | collapse | drawer
+img: /assets/projects/bikes/april_2025_bike_prototype.jpg
+description: A moving networked instrument for situated urban practice.
 ---
 
 # BIKES
+
 
 <center>
     <iframe width="672" height="378" src="https://www.youtube.com/embed/GRHYhLJPuyY" title="BIKES - Atlanta Airport Exhibit" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -12,7 +17,14 @@ bib: bikes
 
 With BIKES we turn a fleet of four cargo bikes into a moving networked instrument for experimental music and sound art. Equipped with powerful PA loudspeakers, a computer and a touch interface, the bikes are designed to interact with our acoustic environment. In public interventions and installations, the BIKES aim at enriching, contrasting and challenging the urban soundscape and acoustics. The BIKES can be used while riding or taken to any location for immediate installation. This opens up completely new possibilities for composition and performance, while increasing accessibility and supporting alternative modes of transportation.
  
- 
+
+## NIME 2026 Video
+
+BIKES as an interface to our urban environment:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cu7xfoVQ-bI?si=QUjm9wX7O0ngt9hv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 ----
 
 <details>

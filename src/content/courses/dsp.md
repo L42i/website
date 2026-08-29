@@ -1,3 +1,7 @@
+---
+order: 4
+status: archived
+---
 # Spring 2025: DSP
 
 The course **Digital Signal Processing for Music Analysis and Synthesis** is a basic introduction into general DSP and selected sound synthesis methods.

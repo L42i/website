@@ -1,0 +1,228 @@
+---
+/**
+ * src/components/ContentList.astro
+ *
+ * Listing for category pages (projects, courses, lab, ...).
+ *
+ * Default layout is `rows`: a thumbnail on the left, title and description
+ * on the right, one item per line — deliberately unlike the People page's
+ * square photo grid, so a category index reads as an index rather than a
+ * gallery.
+ *
+ * `layout="tiles"` keeps the old image-card grid available if a particular
+ * category suits it better.
+ *
+ * Items use a normalized shape so any source can feed this:
+ *   { url, title, description?, img? }
+ *
+ * Items with no image get a muted letter placeholder, so a missing asset
+ * never breaks the alignment of the column.
+ */
+
+export interface ListItem {
+  url: string;
+  title: string;
+  description?: string | null;
+  img?: string | null;
+}
+
+interface Props {
+  items: ListItem[];
+  layout?: 'rows' | 'tiles' | 'compact';
+  /** rows: width of the thumbnail. tiles: min column width. */
+  thumb?: string;
+  /** CSS aspect-ratio for the image area. */
+  aspect?: string;
+}
+
+const {
+  items,
+  layout = 'rows',
+  thumb = layout === 'rows' ? '11rem' : '15rem',
+  aspect = layout === 'rows' ? '4 / 3' : '3 / 2',
+} = Astro.props;
+
+// `compact` is a text-only index — used for archived entries, where the
+// pages stay reachable but should not compete with current ones.
+const showMedia = layout !== 'compact';
+
+const href = (u: string) => `/${u}`.replace(/^\/\//, '/');
+---
+
+<div
+  class:list={['content-list', `is-${layout}`]}
+  style={`--thumb: ${thumb}; --thumb-aspect: ${aspect};`}
+>
+  {items.map((item) => (
+    <a class="row" href={href(item.url)}>
+      {showMedia && (
+      <div class="row-media">
+        {item.img ? (
+          <img src={item.img} alt="" loading="lazy" decoding="async" />
+        ) : (
+          <span class="row-placeholder" aria-hidden="true">
+            {item.title.trim().charAt(0).toUpperCase()}
+          </span>
+        )}
+      </div>
+      )}
+      <div class="row-text">
+        <strong class="row-title">{item.title}</strong>
+        {item.description && <p class="row-desc">{item.description}</p>}
+      </div>
+    </a>
+  ))}
+</div>
+
+<style>
+  /* ── Shared ─────────────────────────────────────────────────────────── */
+  .row {
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+  }
+
+  .row-media {
+    position: relative;
+    aspect-ratio: var(--thumb-aspect);
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--rule-color);
+    flex: none;
+  }
+
+  .row-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .row-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--muted-color);
+    opacity: 0.5;
+  }
+
+  .row-title {
+    display: block;
+    font-weight: 600;
+    color: var(--heading-color);
+    line-height: 1.3;
+  }
+
+  .row:hover .row-title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .row-desc {
+    margin: 0.3rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--muted-color);
+    line-height: 1.5;
+  }
+
+  /* ── Rows: index-style, image left ──────────────────────────────────── */
+  .is-rows {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--rule-color);
+  }
+
+  .is-rows .row {
+    display: grid;
+    grid-template-columns: var(--thumb) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: center;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--rule-color);
+  }
+
+  /* Text sits slightly larger here than in a tile, since there is room. */
+  .is-rows .row-title { font-size: 1.05rem; }
+
+  .is-rows .row:hover .row-media img {
+    opacity: 0.88;
+  }
+
+  .is-rows .row-media img {
+    transition: opacity 0.2s ease;
+  }
+
+  /* Stay horizontal on phones — stacking would turn it back into a
+     gallery, which is the thing we are avoiding. Just a smaller thumb. */
+  @media (max-width: 34rem) {
+    .is-rows .row {
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+      gap: 0.9rem;
+      padding: 0.85rem 0;
+      align-items: start;
+    }
+    .is-rows .row-title { font-size: 1rem; }
+    .is-rows .row-placeholder { font-size: 1.1rem; }
+    /* Two lines of description is plenty at this width. */
+    .is-rows .row-desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  /* ── Compact: text-only index, for archived entries ─────────────────── */
+  .is-compact {
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--rule-color);
+  }
+
+  .is-compact .row {
+    display: block;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule-color);
+  }
+
+  .is-compact .row-title {
+    font-weight: 500;
+    font-size: var(--fs-small);
+    color: var(--muted-color);
+  }
+
+  .is-compact .row:hover .row-title { color: var(--heading-color); }
+
+  .is-compact .row-desc { display: none; }
+
+  /* ── Tiles: the earlier card grid, kept as an option ────────────────── */
+  .is-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--thumb), 1fr));
+    gap: 1.75rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .is-tiles .row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .is-tiles .row-media { border-radius: 8px; }
+
+  .is-tiles .row-media img { transition: transform 0.25s ease; }
+
+  .is-tiles .row:hover .row-media img { transform: scale(1.03); }
+
+  .is-tiles .row-text { margin-top: 0.6rem; }
+
+  @media (max-width: 34rem) {
+    .is-tiles {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem 0.85rem;
+    }
+  }
+</style>

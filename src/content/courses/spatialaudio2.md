@@ -1,3 +1,7 @@
+---
+order: 1
+status: archived
+---
 # Spring 2026: Spatial Audio II
 
 - Grad: [Special Topics - 34641 - MUSI 8803](https://oscar.gatech.edu/)

@@ -1,3 +1,10 @@
+---
+order: 3
+bib: arcube
+bibPosition: drawer      # plain | collapse | drawer
+description: Augmented Reality interfaces for immersive audio performance and production.
+img: /assets/projects/arcube/cube4.png
+---
 # ARCube
 
 <center>

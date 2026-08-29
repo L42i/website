@@ -1,1 +1,1 @@
-scp -r dist/* l42imusic@l42i.music.gatech.edu:/httpdocs
+scp -O -r dist/* l42imusic@l42i.music.gatech.edu:/httpdocs/

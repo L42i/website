@@ -1,14 +1,18 @@
-# Fall 2025: BIKES
+---
+order: 2
+description: Design moving networked instruments and deploy them in situated urban practice.
+---
+# Fall 2026: BIKES
 
-- Undergrad: [Undergraduate Research - 93071 - MUSI 4699 - VC](https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in=202508&crn_in=93071)
-- Undergrad: [Music Tech Capstone I - 91228 - MUSI 4705 - VC](https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in=202508&crn_in=91228)
-- **Times: Flexible**
+- Undergrad: [Special Topics - 93340 - MUSI 4843 - HV](https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in=202608&crn_in=93340)
+- **Times: 11:00 am - 12:15 pm, Fridays**
+- **Location: Couch 115**
 
 <center>
-    <img src="/assets/courses/bikes/four.png" />
+    <img src="/assets/projects/bikes/bikes_rich_2025.jpg" />
 </center>
 
-Launched in Spring 2025, the [BIKES](/bikes) project aims at creating **a moving networked musical instrument** We will have four cargo bikes, each equipped with a PA loudspeaker and a Raspberry Pi – all connected via WiFi, running SuperCollider and other free tools.
-At the center of the Fall 2025 version, we will explore different concepts to compose for - and perform with this instrument. As a group we will work on a series of public interventions, in collaboration with local public communities. Besides building a unique instrument, the goal of the BIKES project is to understand the status quo of transport in the Atlanta area and to challenge the urban soundscape.
+Launched in Spring 2025, the [BIKES](/bikes) project aims at creating **a moving networked musical instrument** with four cargo bikes, each equipped with a PA loudspeaker and a Raspberry Pi – all connected via WiFi, running SuperCollider and other free tools.
+Building on the previous semesters, the Fall 2026 class continues developing the instrument and the repertoire written for it, working towards a series of public interventions in the Atlanta area.
 
 Learn more about [BIKES](/bikes)

@@ -1,3 +1,7 @@
+---
+status: minor     # active (default) | minor | archived
+order: 7
+---
 # Schizosymphony
 
 <center>
