@@ -2,7 +2,7 @@
 name: Alejandro Suarez
 role: Graduate Assistant
 status: current
-order: 2
+order: 3
 img: /assets/people/Alejandro_Suarez.jpeg
 has_page: true
 ---

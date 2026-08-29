@@ -2,7 +2,7 @@
 name: Henrik von Coler
 role: Assistant Professor
 status: current
-order: 1
+order: 0
 img: /assets/people/henrik.jpg
 website: https://hvc.berlin/
 has_page: true
