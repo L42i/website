@@ -267,10 +267,7 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
   ) : (
     <BaseLayout title={categoryName} variant="wide">
       <h1 class="category-title">{categoryName}</h1>
-      <p class="category-subtitle">
-        Browsing all available files in the {categoryName} archive.
-      </p>
-
+     
       {files.length === 0 && minorFiles.length === 0 && archivedFiles.length === 0 ? (
         <div class="empty-state">
           <p>
