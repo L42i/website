@@ -100,7 +100,12 @@ export async function getStaticPaths() {
     const category = parts[parts.indexOf('content') + 1] || '';
     const slug = parts[parts.length - 1].replace(/\.(md|markdown)$/, '');
     const nested = NESTED_CATEGORIES.has(category);
+    // An event with no body text is just a dated entry (title, date, summary)
+    // and gets no page of its own; add text to the file to create one.
+    const body = String(rawFiles[filePath] ?? '').replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
+    const hasPage = category !== 'events' || body.length > 0;
     return {
+      hasPage,
       filePath,
       fileInstance,
       category,
@@ -116,7 +121,7 @@ export async function getStaticPaths() {
 
   // 1. One page per markdown file.
   for (const e of entries) {
-    if (e.slug === 'index') continue;
+    if (e.slug === 'index' || !e.hasPage) continue;
     if (seen.has(e.url)) {
       console.warn(
         `[routing] Duplicate URL "/${e.url}": keeping ${seen.get(e.url)}, ` +
@@ -191,6 +196,7 @@ export async function getStaticPaths() {
         dateLabel: e.fileInstance.frontmatter?.dateLabel ?? null,
         // Optional external page; upcoming events link straight to it.
         link: e.fileInstance.frontmatter?.link ?? null,
+        hasPage: e.hasPage,
         summary: e.fileInstance.frontmatter?.summary ?? null,
       }))
       .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
@@ -200,7 +206,7 @@ export async function getStaticPaths() {
       ...all.filter((f) => f.status === 'active'),
       ...all.filter((f) => f.status === 'minor'),
       ...all.filter((f) => f.status === 'archived'),
-    ];
+    ].filter((f) => f.hasPage);
     ordered.forEach((f, i) => {
       const slim = (x) => (x ? { url: x.url, title: x.title } : null);
       neighbours.set(f.url, { prev: slim(ordered[i - 1]), next: slim(ordered[i + 1]) });
@@ -253,6 +259,8 @@ const isEvents = type === 'category' && categoryName === 'events';
 // `today` is the build date; rebuild to roll an event over.
 const today = new Date().toISOString().slice(0, 10);
 const eventLabel = (e) => e.dateLabel ?? e.date ?? '';
+// Where an event entry points: its external link, else its own page, else nowhere.
+const eventHref = (e) => e.link ?? (e.hasPage ? `/${e.url}` : null);
 const upcomingEvents = (events ?? []).filter((e) => e.date && e.date >= today)
   .sort((a, b) => a.date.localeCompare(b.date));
 const pastEvents = (events ?? []).filter((e) => !e.date || e.date < today)
@@ -324,7 +332,7 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
               <h2 class="event-heading">Upcoming</h2>
               <ul class="event-log">
                 {upcomingEvents.map((e) => (
-                  <li><time>{eventLabel(e)}</time><div><a href={e.link ?? `/${e.url}`} target={e.link ? '_blank' : undefined} rel={e.link ? 'noopener' : undefined}>{e.title}</a>{e.summary && <span class="event-summary">{e.summary}</span>}</div></li>
+                  <li><time>{eventLabel(e)}</time><div><a href={eventHref(e) ?? undefined} target={e.link ? '_blank' : undefined} rel={e.link ? 'noopener' : undefined} class:list={{ 'is-plain': !eventHref(e) }}>{e.title}</a>{e.summary && <span class="event-summary">{e.summary}</span>}</div></li>
                 ))}
               </ul>
             </section>
@@ -334,7 +342,7 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
             {pastEvents.length > 0 ? (
               <ul class="event-log">
                 {pastEvents.map((e) => (
-                  <li><time>{eventLabel(e)}</time><a href={`/${e.url}`}>{e.title}</a></li>
+                  <li><time>{eventLabel(e)}</time><a href={eventHref(e) ?? undefined} class:list={{ 'is-plain': !eventHref(e) }}>{e.title}</a></li>
                 ))}
               </ul>
             ) : <p>No past events yet.</p>}
@@ -384,6 +392,8 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
   .event-log time { color: #6b7280; font-size: 0.9rem; padding-top: 0.2rem; }
   .event-log a { text-decoration: none; color: inherit; font-weight: 600; font-size: 1.15rem; line-height: 1.3; }
   .event-log a:hover { text-decoration: underline; }
+  .event-log a.is-plain { cursor: default; }
+  .event-log a.is-plain:hover { text-decoration: none; }
   .event-summary { display: block; margin-top: 0.3rem; color: #6b7280; font-size: 0.95rem; line-height: 1.5; font-weight: 400; }
   @media (max-width: 600px) { .event-log li { grid-template-columns: 1fr; row-gap: 0.15rem; } }
 </style>
