@@ -383,13 +383,13 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
 }
 
 <style>
-  .event-heading { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: #9ca3af; margin: 2rem 0 0.25rem; font-weight: 600; }
+  .event-heading { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: #9ca3af; margin: 2rem 0 0.25rem; font-weight: 600; }
   .event-log { list-style: none; margin: 0; padding: 0; }
   .event-log li {
     display: grid; grid-template-columns: 12rem 1fr; column-gap: 1.5rem;
     padding: 1rem 0; border-top: 1px solid #e5e7eb;
   }
-  .event-log time { color: #6b7280; font-size: 0.9rem; padding-top: 0.2rem; }
+  .event-log time { font-family: var(--font-mono); font-size: 0.8rem; color: #6b7280; font-size: 0.9rem; padding-top: 0.2rem; }
   .event-log a { text-decoration: none; color: inherit; font-weight: 600; font-size: 1.15rem; line-height: 1.3; }
   .event-log a:hover { text-decoration: underline; }
   .event-log a.is-plain { cursor: default; }

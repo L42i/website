@@ -66,6 +66,7 @@ const href = (u: string) => `/${u}`.replace(/^\/\//, '/');
     margin: 0 auto;
     padding-block: 1rem;   /* vertical only — horizontal comes from the width formula */
     box-sizing: border-box;
+    position: relative;   /* anchors the phone menu panel */
   }
 
   /* Reset figure formatting margins */
@@ -107,6 +108,7 @@ const href = (u: string) => `/${u}`.replace(/^\/\//, '/');
     font-size: 0.85rem;
   }
   .pager-section {
+    font-family: var(--font-mono);
     font-weight: 600;
     font-size: 0.75rem;
     letter-spacing: 0.1em;
