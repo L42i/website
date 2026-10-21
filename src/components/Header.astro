@@ -1,6 +1,10 @@
 ---
 //Header.astro
-import Navigation from './Navigation.astro'; 
+import Navigation from './Navigation.astro';
+
+// Neighbouring pages in the same section ({ url, title } or null).
+const { prev = null, next = null, section = null } = Astro.props;
+const href = (u: string) => `/${u}`.replace(/^\/\//, '/');
 ---
 
 <header class="site-header">
@@ -21,6 +25,22 @@ import Navigation from './Navigation.astro';
     </nav>
 
   </div>
+
+  {(prev || next) && (
+    <div class="pager-bar">
+      <nav class="pager" aria-label="Previous and next page in this section">
+        {prev
+          ? <a class="pager-link is-prev" href={href(prev.url)} rel="prev" title={prev.title}><span class="arrow">&#8249;</span><span class="label">{prev.title}</span></a>
+          : <span></span>}
+        {section
+          ? <a class="pager-section" href={`/${section.id}`}>{section.label}</a>
+          : <span></span>}
+        {next
+          ? <a class="pager-link is-next" href={href(next.url)} rel="next" title={next.title}><span class="label">{next.title}</span><span class="arrow">&#8250;</span></a>
+          : <span></span>}
+      </nav>
+    </div>
+  )}
 </header>
 
 <style>
@@ -46,6 +66,7 @@ import Navigation from './Navigation.astro';
     margin: 0 auto;
     padding-block: 1rem;   /* vertical only — horizontal comes from the width formula */
     box-sizing: border-box;
+    position: relative;   /* anchors the phone menu panel */
   }
 
   /* Reset figure formatting margins */
@@ -70,6 +91,46 @@ import Navigation from './Navigation.astro';
     object-fit: contain;
     display: block;
 }
+
+  .pager-bar {
+    border-top: 1px solid #f3f4f6;
+    background: #fafafa;
+  }
+  .pager {
+    width: min(100% - 2 * var(--gutter), var(--wide-width));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.3rem;
+    box-sizing: border-box;
+    font-size: 0.85rem;
+  }
+  .pager-section {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #111827;
+    text-decoration: none;
+  }
+  .pager-section:hover { text-decoration: underline; }
+  .pager-link.is-next { justify-self: end; }
+  .pager-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    max-width: 100%;
+    color: #4b5563;
+    text-decoration: none;
+  }
+  .pager-link:hover { color: #111827; }
+  .pager-link:hover .label { text-decoration: underline; }
+  .pager-link .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pager-link .arrow { font-size: 1.3rem; line-height: 1; flex: none; }
 
   .header-nav {
     display: flex;

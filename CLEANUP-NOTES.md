@@ -82,7 +82,7 @@ src/
   scripts/
     carousel.js        ← the only carousel behavior on the site.
   content/             ← YOUR CONTENT. One .md per page, grouped by category
-    projects/  lab/  3d-contest/   → flat URLs  (/bikes, /3dbox, ...)
+    projects/  lab/  ga3d/   → flat URLs  (/bikes, /3dbox, ...)
     courses/                       → nested URLs (/courses/dsp, ...)
   pages/
     index.md           ← homepage ("/"). Uses BaseLayout via `layout:` frontmatter.

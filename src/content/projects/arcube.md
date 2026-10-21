@@ -4,6 +4,12 @@ bib: arcube
 bibPosition: drawer      # plain | collapse | drawer
 description: Augmented Reality interfaces for immersive audio performance and production.
 img: /assets/projects/arcube/cube4.png
+events:
+  - berlin-2cubes-2024
+  - l42i-at-sinuston-2024
+  - 2cubes-at-night-of-ideas-2025
+  - 2cubes-at-icmc-2025
+  - supercollider-symposium-2025
 ---
 # ARCube
 

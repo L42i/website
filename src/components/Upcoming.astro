@@ -1,0 +1,89 @@
+---
+// Slim "Upcoming" strip for the home page. Reads every page in
+// src/content/events/ whose frontmatter `date` is today or later.
+// The site is static, so "today" is the build date: rebuild/deploy to
+// let an event that has passed disappear.
+const files = import.meta.glob('/src/content/events/*.md', { eager: true });
+const raws = import.meta.glob('/src/content/events/*.md', { query: '?raw', import: 'default', eager: true });
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const upcoming = Object.entries(files)
+  .map(([path, f]: [string, any]) => {
+    const fm = f.frontmatter || {};
+    const slug = path.split('/').pop()!.replace(/\.md$/, '');
+    // No body text and no link: a plain dated entry, nothing to open.
+    const body = String(raws[path] ?? '').replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
+    const href = fm.link ?? (body ? `/events/${slug}` : null);
+    return { slug, href, title: fm.title, date: new Date(fm.date), label: fm.dateLabel, link: fm.link };
+  })
+  .filter((e) => e.title && !isNaN(e.date.getTime()) && e.date >= today)
+  .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+{upcoming.length > 0 && (
+  <aside class="upcoming" aria-label="Upcoming">
+    <div class="upcoming-inner">
+      <span class="upcoming-label">Upcoming</span>
+      <ul>
+        {upcoming.map((e) => (
+          <li>
+            {e.href ? (
+              <a class="item is-link" href={e.href} target={e.link ? '_blank' : undefined} rel={e.link ? 'noopener' : undefined}>
+                <span class="when">{e.label ?? fmt(e.date)}</span>
+                <span class="what">{e.title}</span>
+                <span class="go" aria-hidden="true">{e.link ? '\u2197' : '\u2192'}</span>
+              </a>
+            ) : (
+              <span class="item">
+                <span class="when">{e.label ?? fmt(e.date)}</span>
+                <span class="what">{e.title}</span>
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </aside>
+)}
+
+<style>
+  .upcoming {
+    width: min(100% - 2 * var(--gutter), var(--wide-width));
+    margin: 1rem auto 0;
+    background: #111;
+    color: #fff;
+    font-size: 0.9rem;
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+  }
+  .upcoming-inner {
+    padding: 0.7rem 1.1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1.5rem;
+  }
+  .upcoming-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 2rem; }
+  .item { color: inherit; display: inline-flex; gap: 0.6rem; align-items: baseline; }
+  a.item { text-decoration: none; }
+  .when { font-family: var(--font-mono); font-size: 0.8rem; color: #9ca3af; white-space: nowrap; }
+  .what { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; }
+  /* Only real links look like links: underlined title, arrow, hover effect. */
+  .is-link .what { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .is-link:hover .what { text-decoration-thickness: 2px; }
+  .go { transition: transform 0.15s; }
+  .is-link:hover .go { transform: translate(2px, -1px); }
+  @media (max-width: 600px) { ul { flex-direction: column; } .item { flex-wrap: wrap; gap: 0 0.5rem; } }
+</style>

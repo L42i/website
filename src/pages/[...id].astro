@@ -7,6 +7,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Publications from '../components/Publications.astro';
 import ContentList from '../components/ContentList.astro';
+import RelatedEvents from '../components/RelatedEvents.astro';
 import { pubsFor } from '../lib/bibtex';
 
 export async function getStaticPaths() {
@@ -14,7 +15,7 @@ export async function getStaticPaths() {
   // Categories listed here keep their folder in the URL (e.g. /courses/dsp).
   // Every other category is served flat (e.g. /bikes). Add "events" etc. here
   // whenever you want that category to be hierarchical.
-  const NESTED_CATEGORIES = new Set(['courses', 'events', '3d-contest']);
+  const NESTED_CATEGORIES = new Set(['courses', 'events', 'ga3d']);
   // ──────────────────────────────────────────────────────────────────────────
 
   // Title fallback chain: frontmatter.title -> first H1 -> prettified slug
@@ -100,7 +101,12 @@ export async function getStaticPaths() {
     const category = parts[parts.indexOf('content') + 1] || '';
     const slug = parts[parts.length - 1].replace(/\.(md|markdown)$/, '');
     const nested = NESTED_CATEGORIES.has(category);
+    // An event with no body text is just a dated entry (title, date, summary)
+    // and gets no page of its own; add text to the file to create one.
+    const body = String(rawFiles[filePath] ?? '').replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
+    const hasPage = category !== 'events' || body.length > 0;
     return {
+      hasPage,
       filePath,
       fileInstance,
       category,
@@ -112,10 +118,11 @@ export async function getStaticPaths() {
 
   const paths = [];
   const seen = new Map(); // route id -> source file (collision guard)
+  const neighbours = new Map(); // route id -> { prev, next } within its section
 
   // 1. One page per markdown file.
   for (const e of entries) {
-    if (e.slug === 'index') continue;
+    if (e.slug === 'index' || !e.hasPage) continue;
     if (seen.has(e.url)) {
       console.warn(
         `[routing] Duplicate URL "/${e.url}": keeping ${seen.get(e.url)}, ` +
@@ -130,6 +137,7 @@ export async function getStaticPaths() {
         type: 'content',
         fileInstance: e.fileInstance,
         title: deriveTitle(e.fileInstance, e.slug),
+        section: e.category,
         // Optional bibliography: add `bib: bikes` (or a list) to the
         // markdown frontmatter and src/data/bib/bikes.bib gets rendered
         // as a Publications section below the content.
@@ -161,7 +169,7 @@ export async function getStaticPaths() {
         url: e.url, // correct link target, flat or nested
         title: deriveTitle(e.fileInstance, e.slug),
         description: deriveDescription(e.fileInstance, e.filePath),
-        img: deriveImage(e.fileInstance, e.filePath),
+        img: e.fileInstance.frontmatter?.thumb ?? deriveImage(e.fileInstance, e.filePath),
         // `status:` controls prominence in the listing.
         //   active   (default) full row with thumbnail and excerpt
         //   minor    compact text row, directly under the active ones
@@ -181,8 +189,29 @@ export async function getStaticPaths() {
         order: Number.isFinite(Number(e.fileInstance.frontmatter?.order))
           ? Number(e.fileInstance.frontmatter.order)
           : Infinity,
+        // Events: `date:` (YYYY-MM-DD) drives the log; `dateLabel:` overrides
+        // how it is displayed (e.g. "Late April 2027").
+        date: e.fileInstance.frontmatter?.date
+          ? new Date(e.fileInstance.frontmatter.date).toISOString().slice(0, 10)
+          : null,
+        dateLabel: e.fileInstance.frontmatter?.dateLabel ?? null,
+        // Optional external page; upcoming events link straight to it.
+        link: e.fileInstance.frontmatter?.link ?? null,
+        hasPage: e.hasPage,
+        summary: e.fileInstance.frontmatter?.summary ?? null,
       }))
       .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+
+    // Same order as the listing page: active, then minor, then archived.
+    const ordered = [
+      ...all.filter((f) => f.status === 'active'),
+      ...all.filter((f) => f.status === 'minor'),
+      ...all.filter((f) => f.status === 'archived'),
+    ].filter((f) => f.hasPage);
+    ordered.forEach((f, i) => {
+      const slim = (x) => (x ? { url: x.url, title: x.title } : null);
+      neighbours.set(f.url, { prev: slim(ordered[i - 1]), next: slim(ordered[i + 1]) });
+    });
 
     paths.push({
       params: { id: category },
@@ -192,8 +221,34 @@ export async function getStaticPaths() {
         files: all.filter((f) => f.status === 'active'),
         minorFiles: all.filter((f) => f.status === 'minor'),
         archivedFiles: all.filter((f) => f.status === 'archived'),
+        events: category === 'events' ? all : [],
       },
     });
+  }
+
+  // Content pages get their previous/next neighbours (computed above, once
+  // every category listing exists) for the header buttons.
+  const byUrl = new Map(entries.map((e) => [e.url, e]));
+  for (const p of paths) {
+    if (p.props.type !== 'content') continue;
+    // `events:` frontmatter -> linked list of those event pages, newest first.
+    const wanted = p.props.fileInstance.frontmatter?.events;
+    p.props.relatedEvents = (Array.isArray(wanted) ? wanted : [])
+      .map((name) => byUrl.get(`events/${name}`))
+      .filter((e) => e && e.hasPage)
+      .map((e) => {
+        const fm = e.fileInstance.frontmatter || {};
+        return {
+          url: e.url,
+          title: deriveTitle(e.fileInstance, e.slug),
+          date: fm.date ? new Date(fm.date).toISOString().slice(0, 10) : null,
+          dateLabel: fm.dateLabel ?? null,
+        };
+      })
+      .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
+    const n = neighbours.get(p.params.id);
+    p.props.prev = n?.prev ?? null;
+    p.props.next = n?.next ?? null;
   }
 
   return paths;
@@ -204,10 +259,30 @@ export async function getStaticPaths() {
 const MINOR_HEADING = 'More';
 const ARCHIVE_HEADING = 'Archive';
 
-const { type, fileInstance, title, categoryName, files, minorFiles, archivedFiles,
+const { type, fileInstance, title, categoryName, files, minorFiles, archivedFiles, events,
         bib, bibHeading,
-        bibPosition, bibMobile } = Astro.props;
+        bibPosition, bibMobile, prev, next, section, relatedEvents } = Astro.props;
 const Content = type === 'content' ? fileInstance.Content : null;
+
+// Display names for folders whose plain name would look wrong as a heading.
+const CATEGORY_TITLES = { ga3d: 'GA3D' };
+const sectionLabel = section
+  ? (CATEGORY_TITLES[section] ?? section.charAt(0).toUpperCase() + section.slice(1))
+  : null;
+const categoryTitle = CATEGORY_TITLES[categoryName] ?? categoryName;
+const isEvents = type === 'category' && categoryName === 'events';
+
+// Events log: upcoming (soonest first) above past (newest first).
+// `today` is the build date; rebuild to roll an event over.
+const today = new Date().toISOString().slice(0, 10);
+const eventLabel = (e) => e.dateLabel ?? e.date ?? '';
+// Where an event entry points: its external link, else its own page, else nowhere.
+const eventHref = (e) => e.link ?? (e.hasPage ? `/${e.url}` : null);
+const upcomingEvents = (events ?? []).filter((e) => e.date && e.date >= today)
+  .sort((a, b) => a.date.localeCompare(b.date));
+const pastEvents = (events ?? []).filter((e) => !e.date || e.date < today)
+  .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
+const pastYears = [...new Set(pastEvents.map((e) => (e.date ?? '').slice(0, 4)).filter(Boolean))];
 
 // Empty array when no `bib:` frontmatter — Publications renders nothing.
 const pubs = type === 'content' ? pubsFor(bib) : [];
@@ -241,11 +316,12 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
 
 {
   type === 'content' ? (
-    <BaseLayout title={title} variant={useSidebar ? 'sidebar' : 'article'}>
+    <BaseLayout title={title} variant={useSidebar ? 'sidebar' : 'article'} prev={prev} next={next} section={section ? { id: section, label: sectionLabel } : null}>
       {useSidebar ? (
         <>
           <div class="content-post sidebar-main">
             <Content />
+            <RelatedEvents events={relatedEvents} />
           </div>
           <aside class="sidebar-aside">
             <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
@@ -256,19 +332,49 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
           <Fragment set:html={bibSplit[0]} />
           <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
           <Fragment set:html={bibSplit[1]} />
+          <RelatedEvents events={relatedEvents} />
         </>
       ) : (
         <>
           <Content />
+          <RelatedEvents events={relatedEvents} />
           <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
         </>
       )}
     </BaseLayout>
   ) : (
-    <BaseLayout title={categoryName} variant="wide">
-      <h1 class="category-title">{categoryName}</h1>
-     
-      {files.length === 0 && minorFiles.length === 0 && archivedFiles.length === 0 ? (
+    <BaseLayout title={isEvents ? 'Events' : categoryTitle} variant="wide">
+      <h1 class="category-title">{categoryTitle}</h1>
+
+      {isEvents ? (
+        <>
+          {upcomingEvents.length > 0 && (
+            <section class="event-section">
+              <h2 class="event-heading">Upcoming</h2>
+              <ul class="event-log">
+                {upcomingEvents.map((e) => (
+                  <li class:list={{ 'has-thumb': !!e.img }}><time>{eventLabel(e)}</time><div><a href={eventHref(e) ?? undefined} target={e.link ? '_blank' : undefined} rel={e.link ? 'noopener' : undefined} class:list={{ 'is-plain': !eventHref(e) }}>{e.title}</a>{e.summary && <span class="event-summary">{e.summary}</span>}</div>{e.img && <img class="event-thumb" src={e.img} alt="" loading="lazy" decoding="async" />}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+          <section class="event-section">
+            <h2 class="event-heading">Past events</h2>
+            {pastEvents.length > 0 ? (
+              pastYears.map((y) => (
+                <>
+                  <h3 class="event-year">{y}</h3>
+                  <ul class="event-log">
+                    {pastEvents.filter((e) => (e.date ?? '').slice(0, 4) === y).map((e) => (
+                      <li class:list={{ 'has-thumb': !!e.img }}><time>{eventLabel(e)}</time><div><a href={eventHref(e) ?? undefined} class:list={{ 'is-plain': !eventHref(e) }}>{e.title}</a>{e.summary && <span class="event-summary">{e.summary}</span>}</div>{e.img && <img class="event-thumb" src={e.img} alt="" loading="lazy" decoding="async" />}</li>
+                    ))}
+                  </ul>
+                </>
+              ))
+            ) : <p>No past events yet.</p>}
+          </section>
+        </>
+      ) : files.length === 0 && minorFiles.length === 0 && archivedFiles.length === 0 ? (
         <div class="empty-state">
           <p>
             No markdown documents found in{' '}
@@ -301,3 +407,28 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
     </BaseLayout>
   )
 }
+
+<style>
+  .event-heading { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: #9ca3af; margin: 2rem 0 0.25rem; font-weight: 600; }
+  .event-year { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0; color: var(--heading-color); }
+  .event-log { list-style: none; margin: 0; padding: 0; }
+  .event-log li {
+    display: grid; grid-template-columns: 12rem 1fr; column-gap: 1.5rem; align-items: start;
+    padding: 1rem 0; border-top: 1px solid #e5e7eb;
+  }
+  .event-log time { font-family: var(--font-mono); font-size: 0.8rem; color: #6b7280; font-size: 0.9rem; padding-top: 0.2rem; }
+  .event-log a {
+    font-family: var(--font-mono); text-decoration: none; color: inherit; font-weight: 700; font-size: 1rem; line-height: 1.35; }
+  .event-log a:hover { text-decoration: underline; }
+  .event-log a.is-plain { cursor: default; }
+  .event-log a.is-plain:hover { text-decoration: none; }
+  .event-summary { display: block; margin-top: 0.3rem; color: #6b7280; font-size: 0.95rem; line-height: 1.5; font-weight: 400; }
+  .event-log li.has-thumb { grid-template-columns: 12rem 1fr 8rem; }
+  .event-thumb { grid-column: 3; grid-row: 1; width: 8rem; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; display: block; }
+  @media (max-width: 600px) {
+    .event-log li, .event-log li.has-thumb { grid-template-columns: 1fr; row-gap: 0.15rem; column-gap: 1rem; }
+    .event-log li.has-thumb { grid-template-columns: 1fr 5.5rem; }
+    .event-log time { grid-column: 1 / -1; }
+    .event-thumb { grid-column: 2; grid-row: 2; width: 5.5rem; }
+  }
+</style>
