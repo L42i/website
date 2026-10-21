@@ -4,6 +4,14 @@ bib: bikes
 bibPosition: drawer      # plain | collapse | drawer
 img: /assets/projects/bikes/april_2025_bike_prototype.jpg
 description: A moving networked instrument for situated urban practice.
+events:
+  - bikes-ghent-2026
+  - bikes-at-atlanta-streets-alive-2026
+  - bikes-ride-2025
+  - bikes-at-site-2025
+  - bikes-launchpad-2025
+  - bikes-at-the-inman-park-parade-2025
+  - bikes-urop-symposium-2025
 ---
 
 # BIKES

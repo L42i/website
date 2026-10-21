@@ -3,18 +3,28 @@ order: 8
 # status: minor   # active (default) | minor | archived
 bib: immersive
 bibPosition: drawer      # plain | collapse | drawer
-img: /assets/projects/immersive_underground.jpg
+img: /assets/events/immersive-open-studios-at-underground-atlanta-2025/1.jpg
 description: A series of interactive immersive installations in public spaces.
+events:
+  - immersive-open-studios-at-underground-atlanta-2025
 ---
 # Immersive Open Studio
 
-![alt text](/assets/projects/immersive_underground.jpg)
+![Immersive Open Studios flyer](/assets/events/immersive-open-studios-at-underground-atlanta-2025/1.jpg)
 
 **Immersive Open Studio is a course-based, shared spatial-audio environment for public presentation of student work.** Rather than each project building its own installation from scratch, a reusable audiovisual infrastructure — a multi-layer loudspeaker array, signal patching and camera-based interaction — is installed in a public venue, and groups develop their pieces directly inside it. The studio grew out of [Spatial Audio I](/courses/spatialaudio1) and [Spatial Audio II](/courses/spatialaudio2), the two-semester curriculum on spatial music and media art.
 
 The first run took place at The Underground Atlanta between October and November 2025, with weekly public showcases. Five student groups presented work within the shared infrastructure: *Immerge*, *Since Everyone's a DJ*, *Audenie*, *MACHINA*, and *Data Mirror: Fragmented Projections of Oneself* — 16 students in total, ranging in aesthetic from ocean sonification to techno-futurism and short film.
 
 ## Infrastructure
+
+<div class="gallery">
+  <img src="/assets/events/immersive-open-studios-at-underground-atlanta-2025/2.jpg" alt="The Immersive Open Studio at Underground Atlanta." />
+  <img src="/assets/events/immersive-open-studios-at-underground-atlanta-2025/8.jpg" alt="Building the loudspeaker truss at Underground Atlanta, October 2025." />
+  <img src="/assets/events/immersive-open-studios-at-underground-atlanta-2025/9.jpg" alt="Rebuilding the system in the second-floor room, November 2025." />
+  <img src="/assets/events/immersive-open-studios-at-underground-atlanta-2025/3.jpg" alt="Projections during an Immersive Open Studio night." />
+  <img src="/assets/events/immersive-open-studios-at-underground-atlanta-2025/7.jpg" alt="Interactive visuals in the second-floor room." />
+</div>
 
 The system was first built as a three-layer loudspeaker array inside a former MARTA station tunnel: a top and middle layer of Neumann KH120 monitors and a bottom layer of QSC K10.2s and Alto subwoofers, with three projectors covering a 270° field. A MIDAS M32 served as the central mixer.
 

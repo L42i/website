@@ -1,0 +1,39 @@
+---
+// "Events" list at the bottom of a project page. Fed by the project's
+// `events:` frontmatter (a list of file names in src/content/events/, without
+// the .md). Newest first. Events with no page of their own are left out.
+interface Item { url: string; title: string; date: string | null; dateLabel: string | null }
+interface Props { events?: Item[] }
+const { events = [] } = Astro.props;
+---
+
+{events.length > 0 && (
+  <section class="related-events">
+    <h2 class="related-heading">Events</h2>
+    <ul>
+      {events.map((e) => (
+        <li>
+          <time>{e.dateLabel ?? e.date}</time>
+          <a href={`/${e.url}`}>{e.title}</a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .related-events { margin-top: 3rem; }
+  .related-heading { font-size: var(--fs-h2); margin-bottom: 0.75rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    column-gap: 1.25rem;
+    padding: 0.65rem 0;
+    border-top: 1px solid var(--rule-color);
+  }
+  time { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted-color); padding-top: 0.2rem; }
+  a { color: inherit; text-decoration: none; font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; line-height: 1.35; }
+  a:hover { text-decoration: underline; }
+  @media (max-width: 600px) { li { grid-template-columns: 1fr; row-gap: 0.1rem; } }
+</style>

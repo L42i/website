@@ -68,6 +68,11 @@ a {
   color: var(--link-color);
 }
 
+/* Every heading uses the mono face (see --font-mono). */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-mono);
+}
+
 /* ============================================================
    2. Page columns (applied by BaseLayout's <main>)
       - .content-post : normal article / markdown column
@@ -189,6 +194,63 @@ a {
   box-shadow: var(--image-shadow);
 }
 
+/* Highlight box, same look as the Upcoming strip on the home page: rounded
+   black box, white text, small mono label. In markdown:
+   <div class="callout">
+   <span class="callout-label">Label</span>
+
+   **Text.**
+
+   </div>                                                              */
+.content-post .callout {
+  margin: 1.75rem 0;
+  padding: 1rem 1.25rem 0.9rem;
+  background: #111;
+  color: #fff;
+  border-radius: 0.75rem;
+}
+.content-post .callout-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+.content-post .callout p { margin: 0; }
+.content-post .callout strong { color: #fff; }
+.content-post .callout a { color: #fff; }
+
+/* Wide picture: full column width, small left-aligned caption.
+   Add class is-small to cap its width. Use as <figure class="banner"><img ...><figcaption>..</figcaption></figure>
+   (keep the tags together, no blank lines, so markdown leaves them alone). */
+.content-post figure.banner {
+  margin: 2rem 0;
+}
+.content-post figure.banner img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  box-shadow: none;
+}
+/* Smaller variant: caps the picture's width and centers it. */
+.content-post figure.banner.is-small {
+  max-width: 34rem;
+  margin-inline: auto;     /* centered in the column */
+}
+.content-post figure.banner.is-small figcaption {
+  text-align: center;
+}
+.content-post figure.banner figcaption {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-color);
+}
+
 /* ============================================================
    4. Utilities you can use inside markdown
    ============================================================ */
@@ -244,6 +306,7 @@ a {
   background-color: #f9fafb;
 }
 .file-title {
+  font-family: var(--font-mono);
   color: var(--heading-color);
 }
 .file-desc {
@@ -499,6 +562,8 @@ a {
 .minor-section { margin-top: 2.5rem; }
 
 .minor-title {
+
+  font-family: var(--font-mono);
   font-size: var(--fs-h3);
   color: var(--muted-color);
   font-weight: 600;
@@ -510,6 +575,8 @@ a {
 .archive-section { margin-top: 2rem; }
 
 .archive-title {
+
+  font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--muted-color);
   font-weight: 500;
