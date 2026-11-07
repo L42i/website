@@ -16,16 +16,9 @@ events:
 
 # BIKES
 
-<div class="video-pair">
-  <figure>
-    <iframe src="https://www.youtube-nocookie.com/embed/HXvE_3P9zcE" title="First test of &quot;BIKES: Flocking&quot; (A)" loading="lazy" allowfullscreen></iframe>
-    <figcaption>First test of “BIKES: Flocking” (A)</figcaption>
-  </figure>
-  <figure>
-    <iframe src="https://www.youtube-nocookie.com/embed/EuE7MDnscWI" title="First test of &quot;BIKES: Flocking&quot; (B)" loading="lazy" allowfullscreen></iframe>
-    <figcaption>First test of “BIKES: Flocking” (B)</figcaption>
-  </figure>
-</div>
+<center>
+    <iframe width="672" height="378" src="https://www.youtube.com/embed/9Aglz71s-gI" title="First tests with BIKES: Flocking on GT campus" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</center>
 
 
 <center>
