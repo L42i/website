@@ -16,6 +16,10 @@ events:
 
 # BIKES
 
+<center>
+    <iframe width="672" height="378" src="https://www.youtube.com/embed/9Aglz71s-gI" title="First tests with BIKES: Flocking on GT campus" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</center>
+
 
 <center>
     <iframe width="672" height="378" src="https://www.youtube.com/embed/GRHYhLJPuyY" title="BIKES - Atlanta Airport Exhibit" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
