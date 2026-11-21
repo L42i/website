@@ -37,6 +37,27 @@ BIKES at the Atlanta Airport Exhibit:
 With BIKES we turn a fleet of four cargo bikes into a moving networked instrument for experimental music and sound art. Equipped with powerful PA loudspeakers, a computer and a touch interface, the bikes are designed to interact with our acoustic environment. In public interventions and installations, the BIKES aim at enriching, contrasting and challenging the urban soundscape and acoustics. The BIKES can be used while riding or taken to any location for immediate installation. This opens up completely new possibilities for composition and performance, while increasing accessibility and supporting alternative modes of transportation.
  
 
+<details>
+    <summary><h3>The Team</h3></summary>
+
+<center>
+    <img src="/assets/projects/bikes/site25.jpg" />
+</center>
+<center><i>The Fall 2025 team at SITE.</i></center>
+
+**Team:** Rachel Neal, Hongyi Lyu, Yunlang Zheng, Hashem Sajid Hasan, Ethan Bixler-Smith
+
+**Tech Lead:** Alejandro Suarez
+
+**Infrastructure Specialist:** Aditya Pawar
+
+**Concept:** Henrik von Coler
+
+**Past Members:** Orlando Kenny, Kevin Shankwiler, Laura Sofia Call Gomez, Jayson Faupel, Shirin Sathe, Jacob Westerstahl, Gabriel Decker, Donald Buck, Julian Cunningham, Jace Walden
+
+The project is funded through the Arts @ Tech Catalyst Grant as Make Musik Mobile(s).
+</details>
+
 ## NIME 2026 Video
 
 BIKES as an interface to our urban environment:
@@ -47,89 +68,18 @@ BIKES as an interface to our urban environment:
 ----
 
 <details>
-    <summary><h3>Documentation</h3></summary>
-
-### Interactive installation
-The BIKES were shown in an interactive installation at the Spring 2025 Launchpad showcase of the School of Industrial Design at Georgia Tech:
-
-<center>
-    <iframe width="672" height="378" src="https://www.youtube.com/embed/W_-XXvLqf4w" title="BIKES - Launchpad 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</center>
-
-<center><i>Interactive installation at Launchpad 2025.</i></center>
-
-### First Mobile Demo
-
-We were invited to join the Inman Park Parade in April 2025. This was the first field test of the BIKES in motion:
-
-<center>
-    <iframe width="672" height="378" src="https://www.youtube.com/embed/uiicOwlAEQU" title="BIKES - Inman Park Parade" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</center>
-
-<center><i>The BIKES in movement at Inman Park Parade.</i></center>
-
-</details>
-
-<details>
-    <summary><h3>The Team</h3></summary>
-
-<center>
-    <img src="/assets/projects/bikes/site25.jpg" />
-</center>
-<center><i>The Fall 2025 team at SITE.</i></center>
-
-#### BIKES Students:
-    Laura Sofia Call Gomez 
-    Jayson Faupel
-    Shirin Sathe
-    Jacob Westerstahl
-    Aditya Pawar
-    Gabriel Decker
-    Donald Buck
-
-#### Project Coordinators:
-    Henrik von Coler (concept, artistic lead)
-    Orlando Kenny (tech lead)
-    Kevin Shankwiler (industrial design lead)
-
-#### Past Members:
-    Julian Cunningham
-    Jace Walden
-
-
-BIKES is a collaboration between Georgia Tech's School of Music and the School for Industrial Design. The project is funded through the Arts @ Tech Catalyst Grant as Make Musik Mobile(s).
-</details>
-
-<details>
     <summary><h3>The BIKE</h3></summary>
 
-BIKES is a collaboration with Atlanta-based bike manufacturer [Edison](https://edisonbicycles.com/). We are using a limited edition of their newest cargo bike:
+BIKES is a collaboration with Atlanta-based bike manufacturer [Edison](https://edisonbicycles.com/). We are using a limited edition of their newest cargo bike. Our Industrial Design team came up with a modular mounting system, that holds the large speaker and all other components:
 
-<center>
-    <img src="/assets/projects/bikes/bike.jpeg" />
-</center>
+<div class="gallery">
+  <img src="/assets/projects/bikes/bike.jpeg" alt="The Edison cargo bike without mods" />
+  <img src="/assets/projects/bikes/april_2025_bike_prototype.jpg" alt="The first prototype with mounted speaker" />
+  <img src="/assets/projects/bikes/bike_screen.jpg" alt="Raspberry Pi with touch screen, mounted in the front (early design with open wiring)" />
+  <img src="/assets/projects/bikes/bike_box.jpg" alt="The wooden box that holds all the technology" />
+</div>
 
-<center><i>The Edison cargo bike without mods.</i></center>
-
-Our Industrial Design team came up with a modular mounting system, that holds the large speaker and all other components:
-
-<center>
-    <img src="/assets/projects/bikes/april_2025_bike_prototype.jpg" />
-</center>
-
-<center><i>The first prototype with mounted speaker.</i></center>
-
-The Raspberry Pi with touch screen is mounted in the front, allowing the rider to interact with the system while driving. This picture show an early design with open wiring:
-
-<center>
-    <img src="/assets/projects/bikes/bike_screen.jpg" />
-</center>
-
-The wooden box accomodates all the technology the bike needs:
-
-<center>
-    <img src="/assets/projects/bikes/bike_box.jpg" />
-</center>
+The Raspberry Pi with touch screen is mounted in the front, allowing the rider to interact with the system while driving. The wooden box accomodates all the technology the bike needs. Click an image to enlarge it.
 </details>
 
 <details>
@@ -143,21 +93,12 @@ We got our four bikes in February 2025 and took them home from Edison's workshop
 
 <center><i>Riding the bikes home from the shop.</i></center>
 
-In the first phase, the BIKES team has been working on mounting the bikes with audio gear. This is an early cable-tie-only solution for testing:
+In the first phase, the BIKES team has been working on mounting the bikes with audio gear, starting with an early cable-tie-only solution for testing, followed by first experiments with the full network of four nodes in the lab:
 
-<center>
-    <img src="/assets/projects/bikes/bikes_wip.jpg" />
-</center>
-
-<center><i>A mounted BIKES prototype.</i></center>
-
-Early experiments of the full network with four nodes in the lab:
-
-<center>
-    <img src="/assets/projects/bikes/bikes_working.jpg" />
-</center>
-
-<center><i>The BIKES Audio & Music Team.</i></center>
+<div class="gallery">
+  <img src="/assets/projects/bikes/bikes_wip.jpg" alt="A mounted BIKES prototype" />
+  <img src="/assets/projects/bikes/bikes_working.jpg" alt="The BIKES Audio & Music Team, with four nodes in the lab" />
+</div>
 
 The music team explored different concepts to synchronize the bikes with SuperCollider via WiFi. This is a first test of the touch screen as a trigger for sound events:
 
