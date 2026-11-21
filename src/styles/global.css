@@ -768,8 +768,28 @@ h1, h2, h3, h4, h5, h6 {
    ============================================================ */
 .content-post h2,
 .content-post details[id] {
-  scroll-margin-top: 8rem;   /* clear the sticky header + pager bar */
+  /* Clear the sticky header and sticky title; both heights are measured
+     by components/Toc.astro. 8rem is the no-JS fallback. */
+  scroll-margin-top: calc(var(--sticky-top, 8rem) + var(--head-h, 0px) + 0.75rem);
 }
+
+/* Sticky page title (wrapped around the <h1> by components/Toc.astro).
+   Bleeds into the gutters so text scrolling underneath is fully covered. */
+.page-head {
+  position: sticky;
+  top: var(--sticky-top, 0px);
+  z-index: 30;                 /* under the header (50) and drawer (40) */
+  background: #fff;
+  margin: 0 calc(-1 * var(--gutter)) 1rem;
+  padding: 0 var(--gutter);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+.page-head.is-stuck { border-bottom-color: var(--rule-color); }
+.content-post .page-head h1 { margin: 0; padding-block: 0.75rem; }
+.page-head .toc { margin: 0; padding-bottom: 0.6rem; }
+/* An open list must not swallow the screen. */
+.page-head .toc ol { max-height: 50vh; overflow-y: auto; }
 
 .toc { margin: 0 0 1.5rem; font-size: var(--fs-small); }
 .toc[hidden] { display: none; }
@@ -809,6 +829,7 @@ h1, h2, h3, h4, h5, h6 {
     overflow-y: auto;
     margin: 0;
   }
+  .page-head .toc ol { max-height: none; overflow: visible; }
   .toc summary { pointer-events: none; cursor: default; list-style: none; }
   .toc summary::-webkit-details-marker { display: none; }
 }
