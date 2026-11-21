@@ -6,6 +6,7 @@ description: Network meta-instruments for enhanced interaction in music performa
 bibPosition: drawer      # plain | collapse | drawer
 events:
   - mesh-at-the-goat-farm-2024
+  - smc-2026
   - mesh-at-cic-2025
   - supercollider-symposium-2025
 ---
