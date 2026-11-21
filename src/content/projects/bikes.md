@@ -2,7 +2,8 @@
 order: 1
 bib: bikes
 bibPosition: drawer      # plain | collapse | drawer
-img: /assets/projects/bikes/april_2025_bike_prototype.jpg
+img: /assets/events/bikes-at-atlanta-streets-alive-2026/1.jpg
+thumb: /assets/events/bikes-at-atlanta-streets-alive-2026/1-thumb.jpg
 description: A moving networked instrument for situated urban practice.
 events:
   - bikes-ghent-2026
