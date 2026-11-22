@@ -674,6 +674,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .gallery img {
   width: 100%;
+  max-width: 100%;             /* undo the 80% cap on plain content images */
   aspect-ratio: 3 / 2;
   object-fit: cover;
   display: block;
