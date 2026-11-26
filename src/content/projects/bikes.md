@@ -30,21 +30,13 @@ BIKES: Flocking makes urban surveillance audible. Four cargo bikes carry their o
 
 With BIKES we turn a fleet of four cargo bikes into a moving networked instrument for experimental music and sound art. Equipped with powerful PA loudspeakers, a computer and a touch interface, the bikes are designed to interact with our acoustic environment. In public interventions and installations, the BIKES aim at enriching, contrasting and challenging the urban soundscape and acoustics. The BIKES can be used while riding or taken to any location for immediate installation. This opens up completely new possibilities for composition and performance, while increasing accessibility and supporting alternative modes of transportation.
 
-## Airport Exhibit
+## The Team
 
-BIKES at the Atlanta Airport Exhibit:
-
-<center>
-    <iframe width="672" height="378" src="https://www.youtube.com/embed/GRHYhLJPuyY" title="BIKES - Atlanta Airport Exhibit" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</center>
-
-<details>
-    <summary><h3>The Team</h3></summary>
-
-<center>
-    <img src="/assets/projects/bikes/site25.jpg" />
-</center>
-<center><i>The Fall 2025 team at SITE.</i></center>
+<div class="gallery">
+  <img src="/assets/events/bikes-at-streets-alive-howell-mill-2026/1.jpg" alt="The BIKES team at Westside Stride, November 2026" />
+  <img src="/assets/events/bikes-at-atlanta-streets-alive-2026/1.jpg" alt="The BIKES team at Atlanta Streets Alive, April 2026" />
+  <img src="/assets/projects/bikes/site25.jpg" alt="The Fall 2025 team at SITE" />
+</div>
 
 **Team:** Rachel Neal, Hongyi Lyu, Yunlang Zheng, Hashem Sajid Hasan, Ethan Bixler-Smith
 
@@ -57,7 +49,14 @@ BIKES at the Atlanta Airport Exhibit:
 **Past Members:** Orlando Kenny, Kevin Shankwiler, Laura Sofia Call Gomez, Jayson Faupel, Shirin Sathe, Jacob Westerstahl, Gabriel Decker, Donald Buck, Julian Cunningham, Jace Walden
 
 The project is funded through the Arts @ Tech Catalyst Grant as Make Musik Mobile(s).
-</details>
+
+## Airport Exhibit
+
+BIKES at the Atlanta Airport Exhibit:
+
+<center>
+    <iframe width="672" height="378" src="https://www.youtube.com/embed/GRHYhLJPuyY" title="BIKES - Atlanta Airport Exhibit" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</center>
 
 ## NIME 2026 Video
 
