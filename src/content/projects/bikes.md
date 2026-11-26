@@ -6,6 +6,7 @@ img: /assets/events/bikes-at-atlanta-streets-alive-2026/1.jpg
 thumb: /assets/events/bikes-at-atlanta-streets-alive-2026/1-thumb.jpg
 description: A moving networked instrument for situated urban practice.
 events:
+  - bikes-at-streets-alive-howell-mill-2026
   - bikes-ghent-2026
   - bikes-at-atlanta-streets-alive-2026
   - bikes-ride-2025
@@ -17,12 +18,12 @@ events:
 
 # BIKES
 
-## Flocking Test
+## Flocking @ Westside Stride
 
-First tests with BIKES: Flocking on the Georgia Tech campus:
+BIKES: Flocking makes urban surveillance audible. Four cargo bikes carry their own AI cameras into the crowd at Westside Stride / Atlanta Streets Alive (Howell Mill Road, November 8, 2026) and call out what they see:
 
 <center>
-    <iframe width="672" height="378" src="https://www.youtube.com/embed/9Aglz71s-gI" title="First tests with BIKES: Flocking on GT campus" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe width="672" height="378" src="https://www.youtube.com/embed/y9V3-vlSWjQ" title="BIKES: Flocking @ Westside Stride" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </center>
 
 ## Airport Exhibit
