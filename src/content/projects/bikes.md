@@ -26,6 +26,10 @@ BIKES: Flocking makes urban surveillance audible. Four cargo bikes carry their o
     <iframe width="672" height="378" src="https://www.youtube.com/embed/y9V3-vlSWjQ" title="BIKES: Flocking @ Westside Stride" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </center>
 
+## Adding Movement to Immersion
+
+With BIKES we turn a fleet of four cargo bikes into a moving networked instrument for experimental music and sound art. Equipped with powerful PA loudspeakers, a computer and a touch interface, the bikes are designed to interact with our acoustic environment. In public interventions and installations, the BIKES aim at enriching, contrasting and challenging the urban soundscape and acoustics. The BIKES can be used while riding or taken to any location for immediate installation. This opens up completely new possibilities for composition and performance, while increasing accessibility and supporting alternative modes of transportation.
+
 ## Airport Exhibit
 
 BIKES at the Atlanta Airport Exhibit:
@@ -33,11 +37,6 @@ BIKES at the Atlanta Airport Exhibit:
 <center>
     <iframe width="672" height="378" src="https://www.youtube.com/embed/GRHYhLJPuyY" title="BIKES - Atlanta Airport Exhibit" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </center>
-
-## Adding Movement to Immersion
-
-With BIKES we turn a fleet of four cargo bikes into a moving networked instrument for experimental music and sound art. Equipped with powerful PA loudspeakers, a computer and a touch interface, the bikes are designed to interact with our acoustic environment. In public interventions and installations, the BIKES aim at enriching, contrasting and challenging the urban soundscape and acoustics. The BIKES can be used while riding or taken to any location for immediate installation. This opens up completely new possibilities for composition and performance, while increasing accessibility and supporting alternative modes of transportation.
- 
 
 <details>
     <summary><h3>The Team</h3></summary>
