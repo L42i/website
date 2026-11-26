@@ -8,6 +8,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Publications from '../components/Publications.astro';
 import ContentList from '../components/ContentList.astro';
 import RelatedEvents from '../components/RelatedEvents.astro';
+import Toc from '../components/Toc.astro';
 import { pubsFor } from '../lib/bibtex';
 
 export async function getStaticPaths() {
@@ -329,6 +330,7 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
         </>
       ) : bibSplit ? (
         <>
+          <Toc />
           <Fragment set:html={bibSplit[0]} />
           <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />
           <Fragment set:html={bibSplit[1]} />
@@ -336,6 +338,7 @@ if (type === 'content' && pubs.length > 0 && !useSidebar && !useDrawer) {
         </>
       ) : (
         <>
+          <Toc />
           <Content />
           <RelatedEvents events={relatedEvents} />
           <Publications pubs={pubs} heading={bibHeading} mobile={bibMobile} drawer={useDrawer} />

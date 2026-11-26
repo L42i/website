@@ -674,6 +674,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .gallery img {
   width: 100%;
+  max-width: 100%;             /* undo the 80% cap on plain content images */
   aspect-ratio: 3 / 2;
   object-fit: cover;
   display: block;
@@ -759,3 +760,90 @@ h1, h2, h3, h4, h5, h6 {
 .lightbox.is-single .lightbox-prev,
 .lightbox.is-single .lightbox-next,
 .lightbox.is-single .lightbox-count { display: none; }
+
+
+/* ============================================================
+   10. "On this page" menu (components/Toc.astro)
+       Wide screens: fixed rail in the left margin, beside the column.
+       Narrow screens: collapsible block above the article text.
+   ============================================================ */
+.content-post h2,
+.content-post details[id] {
+  /* Clear the sticky header and sticky title; both heights are measured
+     by components/Toc.astro. 8rem is the no-JS fallback. */
+  scroll-margin-top: calc(var(--sticky-top, 8rem) + var(--head-h, 0px) + 0.75rem);
+}
+
+/* Sticky page title (wrapped around the <h1> by components/Toc.astro).
+   Bleeds into the gutters so text scrolling underneath is fully covered. */
+.page-head {
+  position: sticky;
+  top: var(--sticky-top, 0px);
+  z-index: 30;                 /* under the header (50) and drawer (40) */
+  background: #fff;
+  margin: 0 calc(-1 * var(--gutter)) 1rem;
+  padding: 0 var(--gutter);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+.page-head.is-stuck { border-bottom-color: var(--rule-color); }
+.content-post .page-head h1 { margin: 0; padding-block: 0.75rem; }
+.page-head .toc { margin: 0; padding-bottom: 0.6rem; }
+/* An open list must not swallow the screen. */
+.page-head .toc ol { max-height: 50vh; overflow-y: auto; }
+
+.toc { margin: 0 0 1.5rem; font-size: var(--fs-small); }
+.toc[hidden] { display: none; }
+.toc summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+}
+.toc ol { list-style: none; margin: 0.6rem 0 0; padding: 0; }
+.toc li { margin: 0; }
+.toc a {
+  display: block;
+  padding: 0.2rem 0 0.2rem 0.75rem;
+  border-left: 2px solid var(--rule-color);
+  color: var(--muted-color);
+  text-decoration: none;
+  line-height: 1.35;
+}
+.toc a:hover { color: var(--heading-color); }
+.toc a.is-current {
+  border-left-color: var(--link-color);
+  color: var(--heading-color);
+  font-weight: 500;
+}
+
+/* px, not rem: the root font size is fluid, so rem media queries drift. */
+@media (min-width: 1500px) {
+  .toc {
+    position: fixed;
+    top: 9rem;
+    left: calc(50% - var(--content-width) / 2 - 12.5rem);
+    width: 11rem;
+    max-height: calc(100vh - 11rem);
+    overflow-y: auto;
+    margin: 0;
+  }
+  .page-head .toc ol { max-height: none; overflow: visible; }
+  .toc summary { pointer-events: none; cursor: default; list-style: none; }
+  .toc summary::-webkit-details-marker { display: none; }
+}
+
+.lightbox-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 3rem;
+  transform: translateX(-50%);
+  max-width: min(90vw, 40rem);
+  text-align: center;
+  color: #fff;
+  font-size: var(--fs-small);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+.lightbox-caption:empty { display: none; }

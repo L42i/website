@@ -6,6 +6,7 @@ description: Network meta-instruments for enhanced interaction in music performa
 bibPosition: drawer      # plain | collapse | drawer
 events:
   - mesh-at-the-goat-farm-2024
+  - smc-2026
   - mesh-at-cic-2025
   - supercollider-symposium-2025
 ---
@@ -53,14 +54,14 @@ In Fall 2024, the experiment was opened as a course called Technology Ensemble. 
 
 The class concluded with a network audio concert at The Goat Farm in Atlanta.
 
-![](/assets/projects/mesh/mesh2.jpeg)
-![](/assets/projects/mesh/crowd.jpeg)
-![](/assets/projects/mesh/mesh1.jpeg)
-![](/assets/projects/mesh/discount.jpeg)
-![](/assets/projects/mesh/mesh3.jpeg)
-
-
-![](/assets/projects/mesh/networkaudio.jpg)
+<div class="gallery">
+  <img src="/assets/projects/mesh/mesh2.jpeg" alt="Performers at the network audio concert, The Goat Farm" />
+  <img src="/assets/projects/mesh/crowd.jpeg" alt="The audience moving through the space" />
+  <img src="/assets/projects/mesh/mesh1.jpeg" alt="Students performing on guitar and electronics" />
+  <img src="/assets/projects/mesh/discount.jpeg" alt="Listeners in front of the projection" />
+  <img src="/assets/projects/mesh/mesh3.jpeg" alt="Guitar with effects, one node of the network" />
+  <img src="/assets/projects/mesh/networkaudio.jpg" alt="A network node: speaker, audio interface, router and screen" />
+</div>
 
 
 ## Spring '24
